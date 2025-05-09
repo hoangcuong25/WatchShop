@@ -43,11 +43,11 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    @ApiMessage("Register a new user")
+    @ApiMessage("Tạo người dùng mới")
     public ResponseEntity<ResCreateUserDTO> register(@Valid @RequestBody User user) throws ThrowBadReqException {
         Boolean isUserExist = userService.isUserExist(user.getEmail());
         if (isUserExist) {
-            throw new ThrowBadReqException("User already exists");
+            throw new ThrowBadReqException("Người dùng đã tồn tại");
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -55,56 +55,35 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.convertToResCreateUserDTO(createdUser));
     }
 
+    private ResLoginDTO.UserLogin convertToUserLogin(User user) {
+        if (user == null) {
+            return null;
+        }
+        return new ResLoginDTO.UserLogin(
+                user.getId(),
+                user.getEmail(),
+                user.getName(),
+                user.getGender() != null ? user.getGender().toString() : null,
+                user.getAddress(),
+                user.getAge());
+    }
+
     @PostMapping("/login")
-    @ApiMessage("Login a user")
+    @ApiMessage("Đăng nhập")
     public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody ReqLoginDTO loginDto) {
-        // Nạp input gồm username/password vào Security
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 loginDto.getEmail(), loginDto.getPassword());
 
-        // xác thực người dùng => cần viết hàm loadUserByUsername
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-
-        // set thông tin người dùng đăng nhập vào context (có thể sử dụng sau này)
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         ResLoginDTO res = new ResLoginDTO();
         User currentUserDB = this.userService.getUserByEmail(loginDto.getEmail());
-        if (currentUserDB != null) {
-            ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
-                    currentUserDB.getId(),
-                    currentUserDB.getEmail(),
-                    currentUserDB.getName(),
-                    currentUserDB.getGender() != null ? currentUserDB.getGender().toString() : null,
-                    currentUserDB.getAddress(),
-                    currentUserDB.getAge());
-            res.setUser(userLogin);
-        }
+        res.setUser(convertToUserLogin(currentUserDB));
 
-        // create access token
         String access_token = this.securityUtil.createAccessToken(authentication.getName(), res);
         res.setAccessToken(access_token);
 
         return ResponseEntity.ok().body(res);
-
-        // // create refresh token
-        // String refresh_token =
-        // this.securityUtil.createRefreshToken(loginDto.getUsername(), res);
-
-        // // update user
-        // this.userService.updateUserToken(refresh_token, loginDto.getUsername());
-
-        // // set cookies
-        // ResponseCookie resCookies = ResponseCookie
-        // .from("refresh_token", refresh_token)
-        // .httpOnly(true)
-        // .secure(true)
-        // .path("/")
-        // .maxAge(refreshTokenExpiration)
-        // .build();
-
-        // return ResponseEntity.ok()
-        // .header(HttpHeaders.SET_COOKIE, resCookies.toString())
-        // .body(res);
     }
 }

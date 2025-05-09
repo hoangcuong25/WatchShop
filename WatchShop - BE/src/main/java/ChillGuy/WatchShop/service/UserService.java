@@ -39,6 +39,31 @@ public class UserService {
         return user.get();
     }
 
+    public void handleDeleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    public User handleUpdateUser(User userUpdateData, User isUser) {
+        if (userUpdateData == null) {
+            return null;
+        }
+
+        if (userUpdateData.getAddress() != null) {
+            isUser.setAddress(userUpdateData.getAddress());
+        }
+        if (userUpdateData.getGender() != null) {
+            isUser.setGender(userUpdateData.getGender());
+        }
+        if (userUpdateData.getAge() > 0) {
+            isUser.setAge(userUpdateData.getAge());
+        }
+        if (userUpdateData.getName() != null) {
+            isUser.setName(userUpdateData.getName());
+        }
+
+        return userRepository.save(isUser);
+    }
+
     public ResUserDTO convertToResUserDTO(User user) {
         ResUserDTO res = new ResUserDTO();
         res.setId(user.getId());
