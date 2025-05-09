@@ -9,27 +9,25 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import ChillGuy.WatchShop.service.UserService;
 
-// @Component("userDetailsService")
-// public class UserDetailsCustom implements UserDetailsService {
+@Component("userDetailsService")
+public class UserDetailsCustom implements UserDetailsService {
 
-//     private final UserService userService;
+    private final UserService userService;
 
-//     public UserDetailsCustom(UserService userService) {
-//         this.userService = userService;
-//     }
+    public UserDetailsCustom(UserService userService) {
+        this.userService = userService;
+    }
 
-//     @Override
-//     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//         ChillGuy.WatchShop.domain.User user = this.userService.handleGetUserByUsername(username);
-//         if (user == null) {
-//             throw new UsernameNotFoundException("Username/password không hợp lệ");
-//         }
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        ChillGuy.WatchShop.domain.User user = this.userService.getUserByEmail(email);
+        if (user == null) {
+            throw new UsernameNotFoundException("Email/password không hợp lệ");
+        }
 
-//         return new User(
-//                 user.getEmail(),
-//                 user.getPassword(),
-//                 Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
-
-//     }
-
-// }
+        return new User(
+                user.getEmail(),
+                user.getPassword(),
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
+    }
+}

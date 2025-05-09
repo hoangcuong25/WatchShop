@@ -10,4 +10,5 @@ import ChillGuy.WatchShop.domain.User;
 public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
     Boolean existsByEmail(String email);
 
+    User findByEmail(String email);
 }

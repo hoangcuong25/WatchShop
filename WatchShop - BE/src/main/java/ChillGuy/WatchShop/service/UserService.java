@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import ChillGuy.WatchShop.domain.User;
 import ChillGuy.WatchShop.domain.response.ResCreateUserDTO;
+import ChillGuy.WatchShop.domain.response.ResLoginDTO;
 import ChillGuy.WatchShop.repository.UserRepository;
 
 @Service
@@ -23,6 +24,10 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
     public ResCreateUserDTO convertToResCreateUserDTO(User user) {
         ResCreateUserDTO res = new ResCreateUserDTO();
         res.setId(user.getId());
@@ -32,6 +37,22 @@ public class UserService {
         res.setAddress(user.getAddress());
         res.setAge(user.getAge());
         res.setCreatedAt(user.getCreatedAt());
+        return res;
+    }
+
+    public ResLoginDTO convertToResLoginUserDTO(User user) {
+        ResLoginDTO res = new ResLoginDTO();
+
+        ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin();
+        userLogin.setId(user.getId());
+        userLogin.setEmail(user.getEmail());
+        userLogin.setName(user.getName());
+        userLogin.setGender(user.getGender().toString());
+        userLogin.setAddress(user.getAddress());
+        userLogin.setAge(user.getAge());
+
+        res.setUser(userLogin);
+
         return res;
     }
 }
