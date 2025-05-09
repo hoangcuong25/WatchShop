@@ -38,13 +38,13 @@ public class SecurityUtil {
 
     public static final MacAlgorithm JWT_ALGORITHM = MacAlgorithm.HS512;
 
-    @Value("${hoidanit.jwt.base64-secret}")
+    @Value("${watchshop.jwt.base64-secret}")
     private String jwtKey;
 
-    @Value("${hoidanit.jwt.access-token-validity-in-seconds}")
+    @Value("${watchshop.jwt.access-token-validity-in-seconds}")
     private long accessTokenExpiration;
 
-    @Value("${hoidanit.jwt.refresh-token-validity-in-seconds}")
+    @Value("${watchshop.jwt.refresh-token-validity-in-seconds}")
     private long refreshTokenExpiration;
 
     public String createAccessToken(String email, ResLoginDTO dto) {
@@ -68,27 +68,25 @@ public class SecurityUtil {
         return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
     }
 
-    // public String createRefreshToken(String email, ResLoginDTO dto) {
-    //     Instant now = Instant.now();
-    //     Instant validity = now.plus(this.refreshTokenExpiration, ChronoUnit.SECONDS);
+    public String createRefreshToken(String email, ResLoginDTO dto) {
+        Instant now = Instant.now();
+        Instant validity = now.plus(this.refreshTokenExpiration, ChronoUnit.SECONDS);
 
-    //     ResLoginDTO.UserInsideToken userToken = new ResLoginDTO.UserInsideToken();
-    //     userToken.setId(dto.getUser().getId());
-    //     userToken.setEmail(dto.getUser().getEmail());
-    //     userToken.setName(dto.getUser().getName());
+        ResLoginDTO.UserInsideToken userToken = new ResLoginDTO.UserInsideToken();
+        userToken.setId(dto.getUser().getId());
+        userToken.setEmail(dto.getUser().getEmail());
+        userToken.setName(dto.getUser().getName());
 
-    //     // @formatter:off
-    //     JwtClaimsSet claims = JwtClaimsSet.builder()
-    //         .issuedAt(now)
-    //         .expiresAt(validity)
-    //         .subject(email)
-    //         .claim("user", userToken)
-    //         .build();
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+            .issuedAt(now)
+            .expiresAt(validity)
+            .subject(email)
+            .claim("user", userToken)
+            .build();
 
-    //     JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
-    //     return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
-
-    // }
+        JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
+        return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
+    }
 
     private SecretKey getSecretKey() {
         byte[] keyBytes = Base64.from(jwtKey).decode();
