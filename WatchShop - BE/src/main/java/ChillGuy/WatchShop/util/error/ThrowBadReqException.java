@@ -1,8 +1,8 @@
 package ChillGuy.WatchShop.util.error;
 
-public class ThrowException extends Exception {
+public class ThrowBadReqException extends Exception {
     // Constructor that accepts a message
-    public ThrowException(String message) {
+    public ThrowBadReqException(String message) {
         super(message);
     }
 }

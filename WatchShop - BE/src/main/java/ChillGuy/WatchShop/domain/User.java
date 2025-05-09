@@ -17,7 +17,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import ChillGuy.WatchShop.util.SecurityUtil;
@@ -32,12 +34,15 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotBlank(message = "Name không được để trống")
     private String name;
 
-    @NotBlank(message = "email không được để trống")
+    @NotBlank(message = "Email không được để trống")
+    @Email(message = "Email không hợp lệ")
     private String email;
 
-    @NotBlank(message = "password không được để trống")
+    @NotBlank(message = "Password không được để trống")
+    @Size(min = 8, message = "Password phải có ít nhất 8 ký tự")
     private String password;
 
     private int age;
@@ -54,7 +59,6 @@ public class User {
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
-
 
     @PrePersist
     public void handleBeforeCreate() {

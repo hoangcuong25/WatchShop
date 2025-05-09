@@ -13,4 +13,12 @@ public class UserService {
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
+    public Boolean isUserExist(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    public User createUser(User user) {
+        return userRepository.save(user);
+    }
 }
