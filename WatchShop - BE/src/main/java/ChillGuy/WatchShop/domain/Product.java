@@ -45,4 +45,9 @@ public class Product {
     @ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @JoinColumn(name = "brand_id", nullable = false)
     private Brand brand;
+
+    @NotNull(message = "Machine Type không được để trống")
+    @ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @JoinColumn(name = "machine_type_id", nullable = false)
+    private MachineType machineType;
 }
