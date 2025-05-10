@@ -75,6 +75,7 @@ public class UserService {
         res.setUpdatedAt(user.getUpdatedAt());
         res.setAvatar(user.getAvatar());
         res.setPhone(user.getPhone());
+        res.setRole(user.getRole().toString());
         return res;
     }
 
@@ -90,19 +91,18 @@ public class UserService {
         return res;
     }
 
-    public ResLoginDTO convertToResLoginUserDTO(User user) {
-        ResLoginDTO res = new ResLoginDTO();
-
+    public ResLoginDTO.UserLogin convertToResLoginUserDTO(User user) {
         ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin();
         userLogin.setId(user.getId());
         userLogin.setEmail(user.getEmail());
         userLogin.setName(user.getName());
-        userLogin.setGender(user.getGender().toString());
+        userLogin.setGender(user.getGender() != null ? user.getGender().toString() : null);
         userLogin.setAddress(user.getAddress());
         userLogin.setAge(user.getAge());
+        userLogin.setAvatar(user.getAvatar());
+        userLogin.setPhone(user.getPhone());
+        userLogin.setRole(user.getRole());
 
-        res.setUser(userLogin);
-
-        return res;
+        return userLogin;
     }
 }

@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-// import ChillGuy.WatchShop.domain.Role;
+import ChillGuy.WatchShop.util.constant.RoleEnum;
 
 @Getter
 @Setter
@@ -28,7 +28,7 @@ public class ResLoginDTO {
         private int age;
         private String avatar;
         private int phone;
-        private String role;
+        private RoleEnum role;
     }
 
     @Getter
@@ -40,12 +40,4 @@ public class ResLoginDTO {
         private String email;
         private String name;
     }
-
-    // @Getter
-    // @Setter
-    // @AllArgsConstructor
-    // @NoArgsConstructor
-    // public static class UserGetAccount {
-    // private UserLogin user;
-    // }
 }

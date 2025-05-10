@@ -55,22 +55,6 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.convertToResCreateUserDTO(createdUser));
     }
 
-    private ResLoginDTO.UserLogin convertToUserLogin(User user) {
-        if (user == null) {
-            return null;
-        }
-        return new ResLoginDTO.UserLogin(
-                user.getId(),
-                user.getEmail(),
-                user.getName(),
-                user.getGender() != null ? user.getGender().toString() : null,
-                user.getAddress(),
-                user.getAge(),
-                user.getAvatar(),
-                user.getPhone(),
-                user.getRole());
-    }
-
     @PostMapping("/login")
     @ApiMessage("Đăng nhập")
     public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody ReqLoginDTO loginDto) {
@@ -82,7 +66,7 @@ public class AuthController {
 
         ResLoginDTO res = new ResLoginDTO();
         User currentUserDB = this.userService.getUserByEmail(loginDto.getEmail());
-        res.setUser(convertToUserLogin(currentUserDB));
+        res.setUser(userService.convertToResLoginUserDTO(currentUserDB));
 
         String access_token = this.securityUtil.createAccessToken(authentication.getName(), res);
         res.setAccessToken(access_token);
