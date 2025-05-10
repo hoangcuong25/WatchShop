@@ -10,25 +10,30 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import ChillGuy.WatchShop.domain.User;
 import ChillGuy.WatchShop.domain.response.ResUserDTO;
 import ChillGuy.WatchShop.service.UserService;
+import ChillGuy.WatchShop.service.CloudinaryService;
 import ChillGuy.WatchShop.util.SecurityUtil;
 import ChillGuy.WatchShop.util.annotation.ApiMessage;
 import ChillGuy.WatchShop.util.error.ThrowBadReqException;
 import ChillGuy.WatchShop.util.constant.RoleEnum;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/api/v1")
 public class UserController {
 
     private final UserService userService;
+    private final CloudinaryService cloudinaryService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, CloudinaryService cloudinaryService) {
         this.userService = userService;
+        this.cloudinaryService = cloudinaryService;
     }
 
     @PostMapping("/users")
@@ -68,10 +73,6 @@ public class UserController {
         // Check if current user is admin
         String email = SecurityUtil.getCurrentUserLogin()
                 .orElseThrow(() -> new ThrowBadReqException("Không tìm thấy người dùng"));
-        // User currentUser = userService.getUserByEmail(email);
-        // if (currentUser == null || currentUser.getRole() != RoleEnum.ADMIN) {
-        //     throw new ThrowBadReqException("Không có quyền thực hiện thao tác này");
-        // }
 
         User user = this.userService.getUserById(id);
         if (user == null) {
@@ -109,5 +110,38 @@ public class UserController {
         }
 
         return ResponseEntity.ok(userService.convertToResUserDTO(updatedUser));
+    }
+
+    @PutMapping("/users/avatar")
+    @ApiMessage("Cập nhật avatar người dùng")
+    public ResponseEntity<ResUserDTO> updateAvatar(@RequestParam("file") MultipartFile file)
+            throws ThrowBadReqException {
+        String email = SecurityUtil.getCurrentUserLogin()
+                .orElseThrow(() -> new ThrowBadReqException("Không tìm thấy người dùng"));
+
+        User currentUser = userService.getUserByEmail(email);
+        if (currentUser == null) {
+            throw new ThrowBadReqException("Không tìm thấy người dùng");
+        }
+
+        try {
+            // Upload file to Cloudinary
+            String imageUrl = cloudinaryService.uploadFile(file);
+
+            // Create update data with new avatar URL
+            User updateData = new User();
+            updateData.setAvatar(imageUrl);
+
+            // Update user with new avatar
+            User updatedUser = userService.handleUpdateUser(updateData, currentUser);
+
+            if (updatedUser == null) {
+                throw new ThrowBadReqException("Đã xảy ra lỗi khi cập nhật avatar");
+            }
+
+            return ResponseEntity.ok(userService.convertToResUserDTO(updatedUser));
+        } catch (Exception e) {
+            throw new ThrowBadReqException("Upload avatar thất bại: " + e.getMessage());
+        }
     }
 }

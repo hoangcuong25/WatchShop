@@ -31,6 +31,8 @@ import ChillGuy.WatchShop.util.constant.RoleEnum;
 @Getter
 @Setter
 public class User {
+    private static final String DEFAULT_AVATAR_URL = "https://res.cloudinary.com/dtaawt3ej/image/upload/v1706880635/default-avatar.jpg";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -74,9 +76,12 @@ public class User {
 
         this.createdAt = Instant.now();
 
-        // Set default role if not set
         if (this.role == null) {
             this.role = RoleEnum.USER;
+        }
+
+        if (this.avatar == null) {
+            this.avatar = DEFAULT_AVATAR_URL;
         }
     }
 
