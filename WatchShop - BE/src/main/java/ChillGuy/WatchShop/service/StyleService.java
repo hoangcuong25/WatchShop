@@ -27,17 +27,16 @@ public class StyleService {
         return styleRepository.findAll();
     }
 
-    public void deleteStyle(Long id) throws ThrowBadReqException {
-        if (!styleRepository.existsById(id)) {
-            throw new ThrowBadReqException("Style not found");
-        }
+    public void deleteStyle(Long id) {
         styleRepository.deleteById(id);
     }
 
     public Styles updateStyle(Styles style) throws ThrowBadReqException {
-        if (!styleRepository.existsById(style.getId())) {
+        Styles currentStyle = styleRepository.findById(style.getId()).orElse(null);
+        if (currentStyle == null) {
             throw new ThrowBadReqException("Style not found");
         }
-        return styleRepository.save(style);
+        currentStyle.setName(style.getName());
+        return styleRepository.save(currentStyle);
     }
 }
