@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
@@ -68,15 +69,25 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<RestResponse<Object>> handleAccessDeniedException(AccessDeniedException ex) {
+        RestResponse<Object> res = new RestResponse<Object>();
+        res.setStatusCode(HttpStatus.FORBIDDEN.value());
+        res.setError("Access Denied");
+        res.setMessage("Bạn không có quyền thực hiện thao tác này");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(res);
+    }
+
     // @ExceptionHandler(value = {
-    //         StorageException.class,
+    // StorageException.class,
     // })
-    // public ResponseEntity<RestResponse<Object>> handleFileUploadException(Exception ex) {
-    //     RestResponse<Object> res = new RestResponse<Object>();
-    //     res.setStatusCode(HttpStatus.BAD_REQUEST.value());
-    //     res.setMessage(ex.getMessage());
-    //     res.setError("Exception upload file...");
-    //     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+    // public ResponseEntity<RestResponse<Object>>
+    // handleFileUploadException(Exception ex) {
+    // RestResponse<Object> res = new RestResponse<Object>();
+    // res.setStatusCode(HttpStatus.BAD_REQUEST.value());
+    // res.setMessage(ex.getMessage());
+    // res.setError("Exception upload file...");
+    // return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     // }
 
 }
