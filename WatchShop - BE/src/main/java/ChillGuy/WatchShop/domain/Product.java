@@ -56,6 +56,33 @@ public class Product {
     @JoinColumn(name = "machine_type_id", nullable = false)
     private MachineType machineType;
 
+    @NotNull(message = "Category không được để trống")
+    private String category;
+
+    @NotNull(message = "Style không được để trống")
+    private String style;
+
+    @NotNull(message = "Design không được để trống")
+    private String design;
+
+    @NotNull(message = "Crystal không được để trống")
+    private String crystal;
+
+    @NotNull(message = "Face Color không được để trống")
+    private String faceColor;
+
+    @NotNull(message = "Diameter không được để trống")
+    private String diameter;
+
+    @NotNull(message = "String Material không được để trống")
+    private String stringMaterial;
+
+    @NotNull(message = "Case Material không được để trống")
+    private String caseMaterial;
+
+    @NotNull(message = "Brand Origin không được để trống")
+    private String brandOrigin;
+
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;
