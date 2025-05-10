@@ -50,6 +50,7 @@ public class SecurityConfiguration {
                 "/api/v1/auth/register",
                 "/storage/**",
                 "/api/v1/email/**",
+                "/api/v1/brands/**"
         };
 
         http
