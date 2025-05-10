@@ -19,17 +19,9 @@ public class ResUserDTO {
     private GenderEnum gender;
     private String address;
     private int age;
+    private String avatar;
+    private int phone;
+    private String role;
     private Instant updatedAt;
     private Instant createdAt;
-
-    // private RoleUser role;
-
-    // @Getter
-    // @Setter
-    // @AllArgsConstructor
-    // @NoArgsConstructor
-    // public static class RoleUser {
-    //     private long id;
-    //     private String name;
-    // }
 }

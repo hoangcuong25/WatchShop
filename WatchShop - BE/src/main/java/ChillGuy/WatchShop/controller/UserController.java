@@ -16,6 +16,7 @@ import ChillGuy.WatchShop.service.UserService;
 import ChillGuy.WatchShop.util.SecurityUtil;
 import ChillGuy.WatchShop.util.annotation.ApiMessage;
 import ChillGuy.WatchShop.util.error.ThrowBadReqException;
+import ChillGuy.WatchShop.util.constant.RoleEnum;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PutMapping;
 
@@ -36,6 +37,9 @@ public class UserController {
         if (isUserExist) {
             throw new ThrowBadReqException("Người dùng đã tồn tại");
         }
+
+        // Set default role for new user
+        user.setRole(RoleEnum.USER);
 
         User createdUser = userService.createUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
@@ -59,6 +63,14 @@ public class UserController {
     @ApiMessage("Xóa người dùng")
     public ResponseEntity<Void> deleteUserById(@PathVariable("id") long id)
             throws ThrowBadReqException {
+        // Check if current user is admin
+        String email = SecurityUtil.getCurrentUserLogin()
+                .orElseThrow(() -> new ThrowBadReqException("Không tìm thấy người dùng"));
+        User currentUser = userService.getUserByEmail(email);
+        if (currentUser == null || currentUser.getRole() != RoleEnum.ADMIN) {
+            throw new ThrowBadReqException("Không có quyền thực hiện thao tác này");
+        }
+
         User user = this.userService.getUserById(id);
         if (user == null) {
             throw new ThrowBadReqException("Người dùng không tồn tại");
@@ -76,11 +88,19 @@ public class UserController {
         String email = SecurityUtil.getCurrentUserLogin()
                 .orElseThrow(() -> new ThrowBadReqException("Không tìm thấy người dùng"));
 
-        User isUser = userService.getUserByEmail(email);
-        if (isUser == null) {
+        User currentUser = userService.getUserByEmail(email);
+        if (currentUser == null) {
             throw new ThrowBadReqException("Không tìm thấy người dùng");
         }
-        User updatedUser = this.userService.handleUpdateUser(userUpdateData, isUser);
+
+        // Prevent role update unless user is admin
+        if (userUpdateData.getRole() != null && userUpdateData.getRole() != currentUser.getRole()) {
+            if (currentUser.getRole() != RoleEnum.ADMIN) {
+                throw new ThrowBadReqException("Không có quyền thay đổi role");
+            }
+        }
+
+        User updatedUser = this.userService.handleUpdateUser(userUpdateData, currentUser);
 
         if (updatedUser == null) {
             throw new ThrowBadReqException("Đã xảy ra lỗi");
@@ -88,5 +108,4 @@ public class UserController {
 
         return ResponseEntity.ok(userService.convertToResUserDTO(updatedUser));
     }
-
 }

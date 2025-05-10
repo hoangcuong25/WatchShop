@@ -72,8 +72,9 @@ public class UserService {
         res.setGender(user.getGender());
         res.setAddress(user.getAddress());
         res.setAge(user.getAge());
-        res.setCreatedAt(user.getCreatedAt());
         res.setUpdatedAt(user.getUpdatedAt());
+        res.setAvatar(user.getAvatar());
+        res.setPhone(user.getPhone());
         return res;
     }
 

@@ -24,6 +24,7 @@ import lombok.Getter;
 import lombok.Setter;
 import ChillGuy.WatchShop.util.SecurityUtil;
 import ChillGuy.WatchShop.util.constant.GenderEnum;
+import ChillGuy.WatchShop.util.constant.RoleEnum;
 
 @Entity
 @Table(name = "users")
@@ -52,8 +53,13 @@ public class User {
 
     private String address;
 
-    // @Column(columnDefinition = "MEDIUMTEXT")
-    // private String refreshToken;
+    private String avatar;
+
+    private int phone;
+
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "varchar(20) default 'USER'")
+    private RoleEnum role = RoleEnum.USER;
 
     private Instant createdAt;
     private Instant updatedAt;
@@ -67,6 +73,11 @@ public class User {
                 : "";
 
         this.createdAt = Instant.now();
+
+        // Set default role if not set
+        if (this.role == null) {
+            this.role = RoleEnum.USER;
+        }
     }
 
     @PreUpdate

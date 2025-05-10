@@ -65,7 +65,10 @@ public class AuthController {
                 user.getName(),
                 user.getGender() != null ? user.getGender().toString() : null,
                 user.getAddress(),
-                user.getAge());
+                user.getAge(),
+                user.getAvatar(),
+                user.getPhone(),
+                user.getRole());
     }
 
     @PostMapping("/login")
