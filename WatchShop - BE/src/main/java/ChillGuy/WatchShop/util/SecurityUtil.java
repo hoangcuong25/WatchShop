@@ -62,6 +62,7 @@ public class SecurityUtil {
             .expiresAt(validity)
             .subject(email)
             .claim("user", userToken)
+            .claim("role", dto.getUser().getRole().toString())
             .build();
 
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();

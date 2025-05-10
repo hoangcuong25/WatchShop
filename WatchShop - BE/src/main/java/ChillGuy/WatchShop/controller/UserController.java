@@ -67,9 +67,9 @@ public class UserController {
         String email = SecurityUtil.getCurrentUserLogin()
                 .orElseThrow(() -> new ThrowBadReqException("Không tìm thấy người dùng"));
         User currentUser = userService.getUserByEmail(email);
-        if (currentUser == null || currentUser.getRole() != RoleEnum.ADMIN) {
-            throw new ThrowBadReqException("Không có quyền thực hiện thao tác này");
-        }
+        // if (currentUser == null || currentUser.getRole() != RoleEnum.ADMIN) {
+        //     throw new ThrowBadReqException("Không có quyền thực hiện thao tác này");
+        // }
 
         User user = this.userService.getUserById(id);
         if (user == null) {
