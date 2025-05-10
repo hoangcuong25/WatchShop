@@ -30,4 +30,16 @@ public class BrandService {
     public void deleteBrand(Long id) {
         brandRepository.deleteById(id);
     }
+
+    public Brand updateBrand(Brand currentBrand, Brand brand) {
+        if (brand.getName() != null) {
+            currentBrand.setName(brand.getName());
+        }
+
+        return brandRepository.save(currentBrand);
+    }
+
+    public Brand findById(Long id) {
+        return brandRepository.findById(id).orElse(null);
+    }
 }

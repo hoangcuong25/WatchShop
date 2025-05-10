@@ -60,6 +60,13 @@ public class UserService {
         if (userUpdateData.getName() != null) {
             isUser.setName(userUpdateData.getName());
         }
+        int phone = userUpdateData.getPhone();
+        if (phone > 0 && String.valueOf(phone).length() == 10) {
+            isUser.setPhone(phone);
+        }
+        if (userUpdateData.getAvatar() != null) {
+            isUser.setAvatar(userUpdateData.getAvatar());
+        }
 
         return userRepository.save(isUser);
     }
