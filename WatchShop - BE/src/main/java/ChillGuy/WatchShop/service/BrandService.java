@@ -26,4 +26,8 @@ public class BrandService {
     public List<Brand> getAllBrands() {
         return brandRepository.findAll();
     }
+
+    public void deleteBrand(Long id) {
+        brandRepository.deleteById(id);
+    }
 }
