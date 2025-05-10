@@ -22,7 +22,7 @@ public class Brand {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Name không được để trống")
+    @NotBlank(message = "Name không được để trống") 
     private String name;
 
     @OneToMany(mappedBy = "brand", fetch = jakarta.persistence.FetchType.LAZY)

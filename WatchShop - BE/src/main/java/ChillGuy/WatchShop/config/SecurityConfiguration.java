@@ -59,6 +59,7 @@ public class SecurityConfiguration {
                         authz -> authz
                                 // Admin only endpoints
                                 .requestMatchers(HttpMethod.DELETE, "/api/v1/users/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/api/v1/brands/**").hasRole("ADMIN")
                                 // Public endpoints
                                 .requestMatchers(whiteList).permitAll()
                                 // All other endpoints require authentication

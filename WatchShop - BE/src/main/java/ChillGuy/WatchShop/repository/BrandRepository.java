@@ -7,5 +7,5 @@ import ChillGuy.WatchShop.domain.Brand;
 
 @Repository
 public interface BrandRepository extends JpaRepository<Brand, Long> {
-    
+    Boolean existsByName(String name);
 }
