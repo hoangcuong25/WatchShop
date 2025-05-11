@@ -1,5 +1,5 @@
 import Header from "@/components/Header";
-
+import Navbar from "@/components/Navbar";
 export default function GuestLayout({
     children,
 }: {
@@ -8,6 +8,7 @@ export default function GuestLayout({
     return (
         <div>
             <Header />
+            <Navbar />
             {children}
         </div>
     );
