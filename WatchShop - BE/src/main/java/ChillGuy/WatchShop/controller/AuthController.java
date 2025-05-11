@@ -114,7 +114,7 @@ public class AuthController {
                 .body(res);
     }
 
-    @GetMapping("/auth/refresh")
+    @GetMapping("/refresh")
     @ApiMessage("Refresh token")
     public ResponseEntity<ResLoginDTO> refreshToken(
             @CookieValue(name = "refresh_token", defaultValue = "abc") String refresh_token)
@@ -171,7 +171,7 @@ public class AuthController {
                 .body(res);
     }
 
-    @PostMapping("/auth/logout")
+    @PostMapping("/logout")
     @ApiMessage("Logout User")
     public ResponseEntity<Void> logout() throws ThrowBadReqException {
         String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
@@ -206,20 +206,20 @@ public class AuthController {
                 .body(null);
     }
 
-    // @GetMapping("/auth/role")
-    // @ApiMessage("Lấy role từ access token")
-    // public ResponseEntity<String> getRoleFromToken(
-    //         @CookieValue(name = "access_token", defaultValue = "") String accessToken) throws ThrowBadReqException {
+    @GetMapping("/role")
+    @ApiMessage("Lấy role từ access token")
+    public ResponseEntity<String> getRoleFromToken(
+            @CookieValue(name = "access_token", defaultValue = "") String accessToken) throws ThrowBadReqException {
 
-    //     if (accessToken.isEmpty()) {
-    //         throw new ThrowBadReqException("Không tìm thấy access token");
-    //     }
+        if (accessToken.isEmpty()) {
+            throw new ThrowBadReqException("Không tìm thấy access token");
+        }
 
-    //     try {
-    //         Jwt decodedToken = this.securityUtil.checkValidRefreshToken(accessToken);
-    //         return ResponseEntity.ok(decodedToken.getClaimAsString("role"));
-    //     } catch (Exception e) {
-    //         throw new ThrowBadReqException("Access token không hợp lệ");
-    //     }
-    // }
+        try {
+            Jwt decodedToken = this.securityUtil.checkValidRefreshToken(accessToken);
+            return ResponseEntity.ok(decodedToken.getClaimAsString("role"));
+        } catch (Exception e) {
+            throw new ThrowBadReqException("Access token không hợp lệ");
+        }
+    }
 }
