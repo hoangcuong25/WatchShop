@@ -8,8 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -88,6 +91,54 @@ public class AuthController {
         // set cookies
         ResponseCookie resCookies = ResponseCookie
                 .from("refresh_token", refresh_token)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(refreshTokenExpiration)
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, resCookies.toString())
+                .body(res);
+    }
+
+    @GetMapping("/auth/refresh")
+    @ApiMessage("Refresh token")
+    public ResponseEntity<ResLoginDTO> refreshToken(
+            @CookieValue(name = "refresh_token", defaultValue = "abc") String refresh_token)
+            throws ThrowBadReqException {
+        if (refresh_token.equals("abc")) {
+            throw new ThrowBadReqException("Bạn không có refresh token ở cookie");
+        }
+
+        // Kiểm tra tính hợp lệ của refresh token
+        Jwt decodedToken = this.securityUtil.checkValidRefreshToken(refresh_token);
+        String email = decodedToken.getSubject();
+
+        // Kiểm tra refresh token trong Redis
+        String storedToken = redisService.getRefreshToken(email);
+        if (storedToken == null || !storedToken.equals(refresh_token)) {
+            throw new ThrowBadReqException("Refresh Token không hợp lệ hoặc đã hết hạn");
+        }
+
+        // Tạo response mới
+        ResLoginDTO res = new ResLoginDTO();
+        User currentUserDB = this.userService.getUserByEmail(email);
+        res.setUser(userService.convertToResLoginUserDTO(currentUserDB));
+
+        // Tạo access token mới
+        String access_token = this.securityUtil.createAccessToken(email, res);
+        res.setAccessToken(access_token);
+
+        // Tạo refresh token mới
+        String new_refresh_token = this.securityUtil.createRefreshToken(email, res);
+
+        // Lưu refresh token mới vào Redis
+        redisService.saveRefreshToken(email, new_refresh_token, refreshTokenExpiration);
+
+        // Set cookie mới
+        ResponseCookie resCookies = ResponseCookie
+                .from("refresh_token", new_refresh_token)
                 .httpOnly(true)
                 .secure(true)
                 .path("/")

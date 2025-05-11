@@ -9,14 +9,17 @@ import ChillGuy.WatchShop.domain.response.ResCreateUserDTO;
 import ChillGuy.WatchShop.domain.response.ResLoginDTO;
 import ChillGuy.WatchShop.domain.response.ResUserDTO;
 import ChillGuy.WatchShop.repository.UserRepository;
+import ChillGuy.WatchShop.service.RedisService;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final RedisService redisService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, RedisService redisService) {
         this.userRepository = userRepository;
+        this.redisService = redisService;
     }
 
     public Boolean isUserExist(String email) {
@@ -69,6 +72,15 @@ public class UserService {
         }
 
         return userRepository.save(isUser);
+    }
+
+    public User getUserByRefreshTokenAndEmail(String refreshToken, String email) {
+        // Kiểm tra refresh token trong Redis
+        String storedToken = redisService.getRefreshToken(email);
+        if (storedToken == null || !storedToken.equals(refreshToken)) {
+            return null;
+        }
+        return userRepository.findByEmail(email);
     }
 
     public ResUserDTO convertToResUserDTO(User user) {
