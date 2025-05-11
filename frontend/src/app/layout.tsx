@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from 'sonner';
+import AppContextProvider from "../context/AppContext";
 
 const geist = Geist({
   subsets: ["latin"],
@@ -24,8 +25,10 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="min-h-screen bg-background">
             <div className="max-w-[1440px] mx-auto">
-              {children}
-              <Toaster />
+              <AppContextProvider>
+                {children}
+                <Toaster />
+              </AppContextProvider>
             </div>
           </div>
         </ThemeProvider>

@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-    const token = request.cookies.get('access_token')?.value
+    const token = request.cookies.get('refresh_token')?.value
     console.log('Token from cookie:', token)
 
     if (!token) {
@@ -19,7 +19,7 @@ export async function middleware(request: NextRequest) {
 
         const response = await fetch(apiUrl, {
             headers: {
-                Cookie: `access_token=${token}`
+                Cookie: `refresh_token=${token}`
             }
         })
 

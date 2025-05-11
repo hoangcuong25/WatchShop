@@ -3,13 +3,18 @@
 import Link from 'next/link';
 import { FcGoogle } from 'react-icons/fc';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useTheme } from 'next-themes';
 import { BsSun, BsMoon } from 'react-icons/bs';
 import { LoginApi } from '@/api/auth.api';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { AppContext } from '@/context/AppContext';
+
 const Login = () => {
+
+    const { setUser } = useContext(AppContext);
+
     const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
     const { theme, setTheme } = useTheme();
@@ -28,6 +33,8 @@ const Login = () => {
         try {
             const response = await LoginApi(email, password);
             toast.success('Đăng nhập thành công');
+            localStorage.setItem('access_token', response.data.access_token);
+            setUser(response.data.user);
 
             if (response.data.user.role === 'ADMIN') {
                 router.push('/admin/dashboard');
