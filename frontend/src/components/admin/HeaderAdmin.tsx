@@ -10,6 +10,7 @@ import { useContext } from "react";
 import { AppContext } from "@/context/AppContext";
 import Image from "next/image";
 import { ThemeToggle } from "@/components/theme-toggle";
+import Link from 'next/link';
 
 export default function HeaderAdmin() {
     const router = useRouter();
@@ -160,11 +161,11 @@ export default function HeaderAdmin() {
                                         className="absolute right-0 mt-3 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl py-2.5 z-50 border border-gray-200 dark:border-gray-700 overflow-hidden user-menu"
                                     >
                                         <div className="absolute -top-3 left-0 right-0 h-3" />
-                                        <button className="w-full group flex items-center px-4 py-2.5 text-sm text-gray-800 dark:text-gray-200 hover:bg-sky-50 dark:hover:bg-gray-700 transition-all duration-200 ease-in-out relative">
+                                        <Link href="/" className="w-full group flex items-center px-4 py-2.5 text-sm text-gray-800 dark:text-gray-200 hover:bg-sky-50 dark:hover:bg-gray-700 transition-all duration-200 ease-in-out relative">
                                             <div className="absolute inset-0 bg-sky-50/50 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-200"></div>
-                                            <FaCog className="mr-2 text-gray-700 transition-transform duration-200 group-hover:scale-110 group-hover:text-gray-900 relative z-10" />
-                                            <span className="font-medium group-hover:text-gray-900 relative z-10">Cài đặt</span>
-                                        </button>
+                                            <FaUser className="mr-2 text-gray-700 transition-transform duration-200 group-hover:scale-110 group-hover:text-gray-900 relative z-10" />
+                                            <span className="font-medium group-hover:text-gray-900 relative z-10">Trang người dùng</span>
+                                        </Link>
                                         <div className="border-t border-gray-200 dark:border-gray-700 my-1.5"></div>
                                         <button
                                             onClick={handleLogout}
