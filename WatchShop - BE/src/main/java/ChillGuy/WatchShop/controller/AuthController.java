@@ -20,6 +20,7 @@ import ChillGuy.WatchShop.domain.request.ReqLoginDTO;
 import ChillGuy.WatchShop.domain.response.ResCreateUserDTO;
 import ChillGuy.WatchShop.domain.response.ResLoginDTO;
 import ChillGuy.WatchShop.service.UserService;
+import ChillGuy.WatchShop.service.RedisService;
 import ChillGuy.WatchShop.util.annotation.ApiMessage;
 import ChillGuy.WatchShop.util.error.ThrowBadReqException;
 import ChillGuy.WatchShop.util.SecurityUtil;
@@ -33,6 +34,7 @@ public class AuthController {
     private final SecurityUtil securityUtil;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final RedisService redisService;
 
     @Value("${watchshop.jwt.refresh-token-validity-in-seconds}")
     private long refreshTokenExpiration;
@@ -41,11 +43,13 @@ public class AuthController {
             UserService userService,
             PasswordEncoder passwordEncoder,
             AuthenticationManagerBuilder authenticationManagerBuilder,
-            SecurityUtil securityUtil) {
+            SecurityUtil securityUtil,
+            RedisService redisService) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.securityUtil = securityUtil;
+        this.redisService = redisService;
     }
 
     @PostMapping("/register")
@@ -78,6 +82,9 @@ public class AuthController {
         res.setAccessToken(access_token);
         String refresh_token = this.securityUtil.createRefreshToken(authentication.getName(), res);
 
+        // Lưu refresh token vào Redis
+        redisService.saveRefreshToken(loginDto.getEmail(), refresh_token, refreshTokenExpiration);
+
         // set cookies
         ResponseCookie resCookies = ResponseCookie
                 .from("refresh_token", refresh_token)
@@ -101,8 +108,8 @@ public class AuthController {
             throw new ThrowBadReqException("Access Token không hợp lệ");
         }
 
-        // // update refresh token = null
-        // this.userService.updateUserToken(null, email);
+        // Xóa refresh token từ Redis
+        redisService.deleteRefreshToken(email);
 
         // remove refresh token cookie
         ResponseCookie deleteSpringCookie = ResponseCookie
