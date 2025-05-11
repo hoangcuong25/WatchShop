@@ -159,21 +159,6 @@ export default function Home() {
         </Swiper>
       </div>
 
-      {/* Sản phẩm nổi bật */}
-      <div className="max-w-6xl mx-auto mt-12 px-2">
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6 text-center">Sản phẩm nổi bật</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {featuredProducts.map((prod, idx) => (
-            <div key={idx} className="bg-white dark:bg-[#181c2a] rounded-lg shadow hover:shadow-xl transition p-4 flex flex-col items-center">
-              <Image src={prod.image} alt={prod.name} className="w-full h-48 object-cover rounded" />
-              <h3 className="mt-4 font-semibold text-lg text-gray-800 dark:text-gray-100 text-center">{prod.name}</h3>
-              <p className="text-primary font-bold text-xl mt-2 dark:text-yellow-300">{prod.price}</p>
-              <button className="mt-4 px-6 py-2 bg-[#22304a] dark:bg-[#10121a] text-white rounded hover:bg-[#161a2b] dark:hover:bg-[#22304a] transition">Xem chi tiết</button>
-            </div>
-          ))}
-        </div>
-      </div>
-
       <div className="mt-12">
         <div className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6 text-center">Sản phẩm bán chạy</div>
         {/* Danh mục nổi bật */}

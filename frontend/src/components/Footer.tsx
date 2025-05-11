@@ -17,15 +17,15 @@ export default function Footer() {
                     <h3 className="text-lg font-bold mb-3">Liên hệ</h3>
                     <ul className="space-y-2 text-sm">
                         <li className="flex items-center gap-2">
-                            <FaMapMarkerAlt className="text-primary" />
+                            <FaMapMarkerAlt />
                             123 Đường ABC, Quận 1, TP.HCM
                         </li>
                         <li className="flex items-center gap-2">
-                            <FaPhoneAlt className="text-primary" />
+                            <FaPhoneAlt  />
                             1900 1234
                         </li>
                         <li className="flex items-center gap-2">
-                            <FaEnvelope className="text-primary" />
+                            <FaEnvelope />
                             support@watchshop.vn
                         </li>
                     </ul>
