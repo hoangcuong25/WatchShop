@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const geist = Geist({
   subsets: ["latin"],
@@ -24,7 +25,9 @@ export default function RootLayout({
           <div className="mx-auto max-w-[1440px]">
             <Header />
             <main className="px-4 sm:px-6 lg:px-8">
-              {children}
+              <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+                {children}
+              </ThemeProvider>
             </main>
           </div>
         </div>
