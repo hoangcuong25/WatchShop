@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
 import { ThemeProvider } from "@/components/theme-provider";
 
 const geist = Geist({
@@ -21,16 +20,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geist.className} antialiased`}>
-        <div className="min-h-screen bg-white">
-          <div className="mx-auto max-w-[1440px]">
-            <Header />
-            <main className="px-4 sm:px-6 lg:px-8">
-              <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <div className="min-h-screen bg-background">
+            <div className="mx-auto max-w-[1440px]">
+              <main className="px-4 sm:px-6 lg:px-8">
                 {children}
-              </ThemeProvider>
-            </main>
+              </main>
+            </div>
           </div>
-        </div>
+        </ThemeProvider>
       </body>
     </html>
   );
