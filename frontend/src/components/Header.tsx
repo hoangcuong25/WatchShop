@@ -10,11 +10,20 @@ import { useState, useContext } from "react";
 import { FcGoogle } from "react-icons/fc";
 import Link from "next/link";
 import { AppContext } from "@/context/AppContext";
-
+import { LogoutApi } from "@/api/auth.api";
+import { useRouter } from "next/navigation";
 export default function Header() {
+
+    const router = useRouter();
     const [isHovered, setIsHovered] = useState(false);
 
     const { user } = useContext(AppContext);
+
+    const handleLogout = async () => {
+        await LogoutApi();
+        localStorage.removeItem('access_token');
+        router.push('/login');
+    }
 
     return (
         <div className="bg-[#0b0d16] text-white border-b">
@@ -143,7 +152,7 @@ export default function Header() {
                                                     <span className="font-medium group-hover:text-gray-900 relative z-10">Đơn hàng</span>
                                                 </Link>
                                                 {user?.role === 'ADMIN' && (
-                                                    <Link href="/admin" className="group flex items-center px-4 py-2.5 text-sm text-gray-800 dark:text-gray-200 hover:bg-sky-50 dark:hover:bg-gray-700 transition-all duration-200 ease-in-out relative">
+                                                    <Link href="/admin/dashboard" className="group flex items-center px-4 py-2.5 text-sm text-gray-800 dark:text-gray-200 hover:bg-sky-50 dark:hover:bg-gray-700 transition-all duration-200 ease-in-out relative">
                                                         <div className="absolute inset-0 bg-sky-50/50 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-200"></div>
                                                         <FaCog className="mr-2 text-gray-700 transition-transform duration-200 group-hover:scale-110 group-hover:text-gray-900 relative z-10" />
                                                         <span className="font-medium group-hover:text-gray-900 relative z-10">Quản trị</span>
@@ -151,7 +160,7 @@ export default function Header() {
                                                 )}
                                                 <div className="border-t border-gray-200 dark:border-gray-700 my-1.5"></div>
                                                 <button
-                                                    onClick={() => { }}
+                                                    onClick={handleLogout}
                                                     className="w-full group flex items-center px-4 py-2.5 text-sm text-gray-800 dark:text-gray-200 hover:bg-sky-50 dark:hover:bg-gray-700 transition-all duration-200 ease-in-out relative"
                                                 >
                                                     <div className="absolute inset-0 bg-sky-50/50 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-200"></div>

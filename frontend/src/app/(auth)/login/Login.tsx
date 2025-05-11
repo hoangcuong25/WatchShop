@@ -35,12 +35,8 @@ const Login = () => {
             toast.success('Đăng nhập thành công');
             localStorage.setItem('access_token', response.data.access_token);
             setUser(response.data.user);
+            router.push('/');
 
-            if (response.data.user.role === 'ADMIN') {
-                router.push('/admin/dashboard');
-            } else {
-                router.push('/');
-            }
         } catch (error: any) {
             setError('Đăng nhập thất bại. Vui lòng thử lại.');
             // toast.error(error.response?.data?.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
