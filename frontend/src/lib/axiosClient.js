@@ -25,13 +25,14 @@ axiosClient.interceptors.response.use(
             originalRequest._retry = true;
 
             try {
-                const { data } = await axios.post(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/refresh-token`,
-                    {},
-                    { withCredentials: true } // Gửi cookie kèm request
+                const { data } = await axios.get(
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/refresh`,
+                    { withCredentials: true }
                 );
 
-                const newAccessToken = data.dataRes;
+                const newAccessToken = data.data.access_token;
+
+                console.log('newAccessToken', newAccessToken);
                 if (newAccessToken) {
                     localStorage.setItem('access_token', newAccessToken);
                     originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
