@@ -42,6 +42,9 @@ public class AuthController {
     @Value("${watchshop.jwt.refresh-token-validity-in-seconds}")
     private long refreshTokenExpiration;
 
+    @Value("${watchshop.jwt.access-token-validity-in-seconds}")
+    private long accessTokenExpiration;
+
     public AuthController(
             UserService userService,
             PasswordEncoder passwordEncoder,
@@ -88,8 +91,16 @@ public class AuthController {
         // Lưu refresh token vào Redis
         redisService.saveRefreshToken(loginDto.getEmail(), refresh_token, refreshTokenExpiration);
 
-        // set cookies
-        ResponseCookie resCookies = ResponseCookie
+        // set cookies cho cả access_token và refresh_token
+        ResponseCookie accessTokenCookie = ResponseCookie
+                .from("access_token", access_token)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(accessTokenExpiration) // 1 giờ
+                .build();
+
+        ResponseCookie refreshTokenCookie = ResponseCookie
                 .from("refresh_token", refresh_token)
                 .httpOnly(true)
                 .secure(true)
@@ -98,7 +109,8 @@ public class AuthController {
                 .build();
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, resCookies.toString())
+                .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
                 .body(res);
     }
 
@@ -136,8 +148,16 @@ public class AuthController {
         // Lưu refresh token mới vào Redis
         redisService.saveRefreshToken(email, new_refresh_token, refreshTokenExpiration);
 
-        // Set cookie mới
-        ResponseCookie resCookies = ResponseCookie
+        // Set cookies mới cho cả access_token và refresh_token
+        ResponseCookie accessTokenCookie = ResponseCookie
+                .from("access_token", access_token)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(accessTokenExpiration)
+                .build();
+
+        ResponseCookie refreshTokenCookie = ResponseCookie
                 .from("refresh_token", new_refresh_token)
                 .httpOnly(true)
                 .secure(true)
@@ -146,7 +166,8 @@ public class AuthController {
                 .build();
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, resCookies.toString())
+                .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
                 .body(res);
     }
 
@@ -162,8 +183,16 @@ public class AuthController {
         // Xóa refresh token từ Redis
         redisService.deleteRefreshToken(email);
 
-        // remove refresh token cookie
-        ResponseCookie deleteSpringCookie = ResponseCookie
+        // remove cả access_token và refresh_token cookies
+        ResponseCookie deleteAccessTokenCookie = ResponseCookie
+                .from("access_token", null)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(0)
+                .build();
+
+        ResponseCookie deleteRefreshTokenCookie = ResponseCookie
                 .from("refresh_token", null)
                 .httpOnly(true)
                 .secure(true)
@@ -172,7 +201,25 @@ public class AuthController {
                 .build();
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, deleteSpringCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, deleteAccessTokenCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, deleteRefreshTokenCookie.toString())
                 .body(null);
     }
+
+    // @GetMapping("/auth/role")
+    // @ApiMessage("Lấy role từ access token")
+    // public ResponseEntity<String> getRoleFromToken(
+    //         @CookieValue(name = "access_token", defaultValue = "") String accessToken) throws ThrowBadReqException {
+
+    //     if (accessToken.isEmpty()) {
+    //         throw new ThrowBadReqException("Không tìm thấy access token");
+    //     }
+
+    //     try {
+    //         Jwt decodedToken = this.securityUtil.checkValidRefreshToken(accessToken);
+    //         return ResponseEntity.ok(decodedToken.getClaimAsString("role"));
+    //     } catch (Exception e) {
+    //         throw new ThrowBadReqException("Access token không hợp lệ");
+    //     }
+    // }
 }

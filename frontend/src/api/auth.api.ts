@@ -13,4 +13,13 @@ export const RegisterApi = async (name: string, email: string, password1: string
     }
 }
 
+export const LoginApi = async (email: string, password: string) => {
+    try {
+        const response = await axiosClient.post('/api/v1/auth/login', { email, password });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 

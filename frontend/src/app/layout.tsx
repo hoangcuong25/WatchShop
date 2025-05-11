@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster} from 'sonner';
+import { Toaster } from 'sonner';
 
 const geist = Geist({
   subsets: ["latin"],
@@ -23,11 +23,9 @@ export default function RootLayout({
       <body className={`${geist.className} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="min-h-screen bg-background">
-            <div className="mx-auto max-w-[1440px]">
-              <main className="px-4 sm:px-6 lg:px-8">
-                {children}
-                <Toaster />
-              </main>
+            <div className="max-w-[1440px] mx-auto">
+              {children}
+              <Toaster />
             </div>
           </div>
         </ThemeProvider>
