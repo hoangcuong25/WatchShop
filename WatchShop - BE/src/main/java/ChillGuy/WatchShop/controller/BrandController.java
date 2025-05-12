@@ -45,7 +45,7 @@ public class BrandController {
 
         Boolean isBrand = brandService.findByName(name);
         if (isBrand) {
-            throw new ThrowBadReqException("Brand already exists");
+            throw new ThrowBadReqException("Thương hiệu đã tồn tại");
         }
 
         Brand brand = new Brand();
