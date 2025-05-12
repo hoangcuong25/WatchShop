@@ -108,4 +108,4 @@ export default function EditDialog({ isOpen, onOpenChange, isLoading, selectedBr
             </DialogContent>
         </Dialog>
     );
-} 
+}
