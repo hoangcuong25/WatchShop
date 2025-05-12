@@ -8,10 +8,31 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { deleteBrandApi } from "@/api/brand.api";
+import { toast } from "sonner";
 
-export default function DeleteAlertDialog() {
+export default function DeleteAlertDialog(
+    { isOpen, setIsOpen, id, setBrands, brands }: {
+        isOpen: boolean,
+        setIsOpen: (isOpen: boolean) => void,
+        id: string,
+        setBrands: (brands: BrandType[]) => void,
+        brands: BrandType[]
+    }) {
+
+    const handleDelete = async () => {
+        try {
+            await deleteBrandApi(id);
+            toast.success('Thương hiệu đã được xóa thành công');
+            setBrands(brands.filter(brand => brand.id !== Number(id)));
+            setIsOpen(false);
+        } catch (error) {
+            toast.error('Lỗi khi xóa thương hiệu');
+        }
+    }
+
     return (
-        <AlertDialog>
+        <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
             <AlertDialogContent className="w-[95%] sm:w-[500px] bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
                 <AlertDialogHeader>
                     <AlertDialogTitle className="text-slate-900 dark:text-white">Xác nhận xóa</AlertDialogTitle>
@@ -27,6 +48,7 @@ export default function DeleteAlertDialog() {
                     </AlertDialogCancel>
                     <AlertDialogAction
                         className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white"
+                        onClick={handleDelete}
                     >
                         Xóa
                     </AlertDialogAction>

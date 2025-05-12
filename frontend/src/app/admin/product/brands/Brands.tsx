@@ -13,8 +13,12 @@ import AddDialog from './components/AddDialog';
 
 export default function Brands() {
     const { brands, setBrands, formatDate } = useContext(AppContext);
+
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+
+    const [isDeleteAlertDialogOpen, setIsDeleteAlertDialogOpen] = useState(false);
+    const [selectedBrandId, setSelectedBrandId] = useState<string>('');
 
     const handleAddBrand = async (formData: FormData) => {
         setIsLoading(true);
@@ -45,7 +49,14 @@ export default function Brands() {
             </div>
 
             <Search isLoading={isLoading} />
-            <BrandsTable isLoading={isLoading} brands={brands} formatDate={formatDate} />
+
+            <BrandsTable
+                isLoading={isLoading}
+                brands={brands}
+                formatDate={formatDate}
+                setIsDeleteAlertDialogOpen={setIsDeleteAlertDialogOpen}
+                setSelectedBrandId={setSelectedBrandId}
+            />
 
             <AddDialog
                 isOpen={isAddDialogOpen}
@@ -54,7 +65,13 @@ export default function Brands() {
                 isLoading={isLoading}
             />
 
-            <DeleteAlertDialog />
+            <DeleteAlertDialog
+                isOpen={isDeleteAlertDialogOpen}
+                setIsOpen={setIsDeleteAlertDialogOpen}
+                id={selectedBrandId || ''}
+                setBrands={setBrands}
+                brands={brands}
+            />
         </div>
     );
 }

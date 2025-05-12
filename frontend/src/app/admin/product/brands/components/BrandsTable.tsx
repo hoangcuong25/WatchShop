@@ -4,7 +4,15 @@ import { Loader2 } from "lucide-react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import Image from "next/image";
 
-export default function BrandsTable({ isLoading, brands, formatDate }: { isLoading: boolean, brands: BrandType[], formatDate: (date: string) => string }) {
+export default function BrandsTable(
+    { isLoading, brands, formatDate, setIsDeleteAlertDialogOpen, setSelectedBrandId }: {
+        isLoading: boolean,
+        brands: BrandType[],
+        formatDate: (date: string) => string,
+        setIsDeleteAlertDialogOpen: (isOpen: boolean) => void,
+        setSelectedBrandId: (id: string) => void
+    }) {
+
     return (
         <Card className="overflow-hidden border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm">
             <div className="overflow-x-auto">
@@ -82,6 +90,10 @@ export default function BrandsTable({ isLoading, brands, formatDate }: { isLoadi
                                                 size="icon"
                                                 className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/50"
                                                 disabled={isLoading}
+                                                onClick={() => {
+                                                    setIsDeleteAlertDialogOpen(true);
+                                                    setSelectedBrandId(brand.id.toString());
+                                                }}
                                             >
                                                 <FaTrash />
                                             </Button>

@@ -16,4 +16,9 @@ export const createBrandApi = async (brand: FormData) => {
     return response.data;
 }
 
+export const deleteBrandApi = async (id: string) => {
+    const response = await axiosClient.delete(`/api/v1/brands/${id}`);
+    return response.data;
+}
+
 
