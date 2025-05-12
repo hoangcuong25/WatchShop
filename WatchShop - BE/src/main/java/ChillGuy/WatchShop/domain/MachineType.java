@@ -31,6 +31,9 @@ public class MachineType {
     @NotBlank(message = "Name không được để trống")
     private String name;
 
+    @NotBlank(message = "Description không được để trống")
+    private String description;
+
     @OneToMany(mappedBy = "machineType", fetch = jakarta.persistence.FetchType.LAZY)
     @JsonIgnore
     private List<Product> products = new ArrayList<>();

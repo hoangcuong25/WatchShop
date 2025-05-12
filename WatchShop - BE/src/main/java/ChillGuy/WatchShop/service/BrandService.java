@@ -1,11 +1,19 @@
 package ChillGuy.WatchShop.service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import ChillGuy.WatchShop.domain.Brand;
 import ChillGuy.WatchShop.repository.BrandRepository;
+import ChillGuy.WatchShop.util.error.ThrowBadReqException;
 
 @Service
 public class BrandService {

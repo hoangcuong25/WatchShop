@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { FaPlus, FaEdit, FaTrash, FaSearch } from 'react-icons/fa';
 import { Card } from "@/components/ui/card";
 import {
@@ -22,65 +21,36 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-interface Brand {
-    id: number;
-    name: string;
-    createdAt: string;
-    updatedAt: string;
-}
+import { useState } from 'react';
+import { createBrandApi } from '@/api/brand.api';
+import Image from 'next/image';
+import { toast } from 'sonner';
 
 export default function Brands() {
-    const [brands, setBrands] = useState<Brand[]>([
-        { id: 1, name: 'Rolex', createdAt: '2024-03-20', updatedAt: '2024-03-20' },
-        { id: 2, name: 'Omega', createdAt: '2024-03-20', updatedAt: '2024-03-20' },
-        { id: 3, name: 'TAG Heuer', createdAt: '2024-03-20', updatedAt: '2024-03-20' },
-    ]);
-    const [searchTerm, setSearchTerm] = useState('');
+
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-    const [selectedBrand, setSelectedBrand] = useState<Brand | null>(null);
-    const [newBrandName, setNewBrandName] = useState('');
 
-    const filteredBrands = brands.filter(brand =>
-        brand.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const [brandName, setBrandName] = useState('');
+    const [brandImage, setBrandImage] = useState<File | null>(null);
 
-    const handleAddBrand = () => {
-        if (newBrandName.trim()) {
-            const newBrand: Brand = {
-                id: brands.length + 1,
-                name: newBrandName,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-            };
-            setBrands([...brands, newBrand]);
-            setNewBrandName('');
+    const handleAddBrand = async () => {
+        if (!brandName || !brandImage) {
+            toast.error('Vui lòng nhập tên và ảnh thương hiệu');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('name', brandName);
+        formData.append('image', brandImage);
+
+        try {
+            const response = await createBrandApi(formData);
+            toast.success('Thương hiệu đã được tạo thành công');
             setIsAddDialogOpen(false);
+        } catch (error) {
+            toast.error('Lỗi khi tạo thương hiệu');
         }
-    };
-
-    const handleEditBrand = () => {
-        if (selectedBrand && newBrandName.trim()) {
-            setBrands(brands.map(brand =>
-                brand.id === selectedBrand.id
-                    ? { ...brand, name: newBrandName, updatedAt: new Date().toISOString() }
-                    : brand
-            ));
-            setNewBrandName('');
-            setIsEditDialogOpen(false);
-            setSelectedBrand(null);
-        }
-    };
-
-    const handleDeleteBrand = () => {
-        if (selectedBrand) {
-            setBrands(brands.filter(brand => brand.id !== selectedBrand.id));
-            setIsDeleteDialogOpen(false);
-            setSelectedBrand(null);
-        }
-    };
+    }
 
     return (
         <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 bg-slate-50 dark:bg-slate-900 min-h-screen">
@@ -100,8 +70,6 @@ export default function Brands() {
                 <Input
                     type="text"
                     placeholder="Tìm kiếm thương hiệu..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus:border-blue-500 dark:focus:border-blue-500"
                 />
                 <FaSearch className="absolute left-3 top-3 text-slate-400" />
@@ -131,49 +99,38 @@ export default function Brands() {
                             </tr>
                         </thead>
                         <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
-                            {filteredBrands.map((brand) => (
-                                <tr key={brand.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
-                                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-slate-900 dark:text-slate-100">
-                                        {brand.id}
-                                    </td>
-                                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-slate-900 dark:text-slate-100">
-                                        {brand.name}
-                                    </td>
-                                    <td className="hidden md:table-cell px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
-                                        {new Date(brand.createdAt).toLocaleDateString()}
-                                    </td>
-                                    <td className="hidden md:table-cell px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
-                                        {new Date(brand.updatedAt).toLocaleDateString()}
-                                    </td>
-                                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <div className="flex justify-end gap-2">
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => {
-                                                    setSelectedBrand(brand);
-                                                    setNewBrandName(brand.name);
-                                                    setIsEditDialogOpen(true);
-                                                }}
-                                                className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/50"
-                                            >
-                                                <FaEdit />
-                                            </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => {
-                                                    setSelectedBrand(brand);
-                                                    setIsDeleteDialogOpen(true);
-                                                }}
-                                                className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/50"
-                                            >
-                                                <FaTrash />
-                                            </Button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
+                            <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+                                <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-slate-900 dark:text-slate-100">
+                                    1
+                                </td>
+                                <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-slate-900 dark:text-slate-100">
+                                    Rolex
+                                </td>
+                                <td className="hidden md:table-cell px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                                    20/03/2024
+                                </td>
+                                <td className="hidden md:table-cell px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                                    20/03/2024
+                                </td>
+                                <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <div className="flex justify-end gap-2">
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/50"
+                                        >
+                                            <FaEdit />
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/50"
+                                        >
+                                            <FaTrash />
+                                        </Button>
+                                    </div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -188,19 +145,26 @@ export default function Brands() {
                     <div className="py-4">
                         <Input
                             type="text"
-                            value={newBrandName}
-                            onChange={(e) => setNewBrandName(e.target.value)}
                             placeholder="Nhập tên thương hiệu"
                             className="bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 focus:border-blue-500 dark:focus:border-blue-500"
                         />
+
+                        <Input
+                            type="file"
+                            placeholder="Ảnh thương hiệu"
+                            className="bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 focus:border-blue-500 dark:focus:border-blue-500 mt-8"
+                            onChange={(e) => setBrandImage(e.target.files?.[0] || null)}
+                        />
+
+                        {
+                            brandImage && (
+                                <Image src={URL.createObjectURL(brandImage)} width={100} height={100} alt="Ảnh thương hiệu" className="w-full h-40 object-cover mt-4" />
+                            )
+                        }
                     </div>
                     <DialogFooter className="flex flex-col sm:flex-row gap-2">
                         <Button
                             variant="outline"
-                            onClick={() => {
-                                setIsAddDialogOpen(false);
-                                setNewBrandName('');
-                            }}
                             className="w-full sm:w-auto border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700"
                         >
                             Hủy
@@ -216,7 +180,7 @@ export default function Brands() {
             </Dialog>
 
             {/* Edit Dialog */}
-            <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+            <Dialog>
                 <DialogContent className="w-[95%] sm:w-[500px] bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
                     <DialogHeader>
                         <DialogTitle className="text-slate-900 dark:text-white">Sửa Thương hiệu</DialogTitle>
@@ -224,8 +188,6 @@ export default function Brands() {
                     <div className="py-4">
                         <Input
                             type="text"
-                            value={newBrandName}
-                            onChange={(e) => setNewBrandName(e.target.value)}
                             placeholder="Nhập tên thương hiệu"
                             className="bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 focus:border-blue-500 dark:focus:border-blue-500"
                         />
@@ -233,17 +195,11 @@ export default function Brands() {
                     <DialogFooter className="flex flex-col sm:flex-row gap-2">
                         <Button
                             variant="outline"
-                            onClick={() => {
-                                setIsEditDialogOpen(false);
-                                setNewBrandName('');
-                                setSelectedBrand(null);
-                            }}
                             className="w-full sm:w-auto border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700"
                         >
                             Hủy
                         </Button>
                         <Button
-                            onClick={handleEditBrand}
                             className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white"
                         >
                             Lưu
@@ -253,26 +209,21 @@ export default function Brands() {
             </Dialog>
 
             {/* Delete Alert Dialog */}
-            <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+            <AlertDialog>
                 <AlertDialogContent className="w-[95%] sm:w-[500px] bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
                     <AlertDialogHeader>
                         <AlertDialogTitle className="text-slate-900 dark:text-white">Xác nhận xóa</AlertDialogTitle>
                         <AlertDialogDescription className="text-slate-500 dark:text-slate-400">
-                            Bạn có chắc chắn muốn xóa thương hiệu "{selectedBrand?.name}"? Hành động này không thể hoàn tác.
+                            Bạn có chắc chắn muốn xóa thương hiệu này? Hành động này không thể hoàn tác.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter className="flex flex-col sm:flex-row gap-2">
                         <AlertDialogCancel
-                            onClick={() => {
-                                setIsDeleteDialogOpen(false);
-                                setSelectedBrand(null);
-                            }}
                             className="w-full sm:w-auto border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700"
                         >
                             Hủy
                         </AlertDialogCancel>
                         <AlertDialogAction
-                            onClick={handleDeleteBrand}
                             className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white"
                         >
                             Xóa

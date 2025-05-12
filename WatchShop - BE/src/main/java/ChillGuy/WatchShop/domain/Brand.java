@@ -31,6 +31,9 @@ public class Brand {
     @NotBlank(message = "Name không được để trống")
     private String name;
 
+    @NotBlank(message = "Image không được để trống")
+    private String image;
+
     @OneToMany(mappedBy = "brand", fetch = jakarta.persistence.FetchType.LAZY)
     @JsonIgnore
     private List<Product> products = new ArrayList<>();

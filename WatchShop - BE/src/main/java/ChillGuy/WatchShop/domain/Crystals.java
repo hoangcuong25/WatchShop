@@ -1,12 +1,17 @@
 package ChillGuy.WatchShop.domain;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import ChillGuy.WatchShop.util.SecurityUtil;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -25,6 +30,13 @@ public class Crystals {
 
     @NotBlank(message = "Name không được để trống")
     private String name;
+
+    @NotBlank(message = "Description không được để trống")
+    private String description;
+
+    @OneToMany(mappedBy = "crystal", fetch = jakarta.persistence.FetchType.LAZY)
+    @JsonIgnore
+    private List<Product> products = new ArrayList<>();
 
     private Instant createdAt;
     private Instant updatedAt;
