@@ -1,6 +1,7 @@
 package ChillGuy.WatchShop.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import ChillGuy.WatchShop.domain.Image;
 import ChillGuy.WatchShop.domain.Product;
@@ -21,14 +22,19 @@ public class ProductService {
         return productRepository.existsByName(name);
     }
 
+    @Transactional
     public Product createProduct(Product product) {
+        // Lưu sản phẩm trước
         Product createdProduct = productRepository.save(product);
-        if (product.getImages() != null) {
+
+        // Lưu các ảnh và gán sản phẩm cho mỗi ảnh
+        if (product.getImages() != null && !product.getImages().isEmpty()) {
             for (Image image : product.getImages()) {
                 image.setProduct(createdProduct);
                 imageRepository.save(image);
             }
         }
+
         return createdProduct;
     }
 }

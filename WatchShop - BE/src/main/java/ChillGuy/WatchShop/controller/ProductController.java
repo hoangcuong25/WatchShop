@@ -17,6 +17,8 @@ import ChillGuy.WatchShop.service.ProductService;
 import ChillGuy.WatchShop.util.annotation.ApiMessage;
 import ChillGuy.WatchShop.util.error.ThrowBadReqException;
 import jakarta.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -35,29 +37,42 @@ public class ProductController {
     @ApiMessage("Thêm sản phẩm")
     public ResponseEntity<Product> createProduct(
             @Valid @RequestBody Product product,
-            @RequestParam("images") MultipartFile[] images) throws ThrowBadReqException {
+            @RequestParam("images") MultipartFile[] images,
+            @RequestParam(value = "mainImageIndex", defaultValue = "0") int mainImageIndex)
+            throws ThrowBadReqException {
 
-        Boolean isProduct = productService.getProductByName(product.getName());
-        if (isProduct) {
+        // Kiểm tra tên sản phẩm
+        if (productService.getProductByName(product.getName())) {
             throw new ThrowBadReqException("Sản phẩm đã tồn tại");
         }
 
-        if (images == null) {
+        // Kiểm tra ảnh
+        if (images == null || images.length == 0) {
             throw new ThrowBadReqException("Ảnh không được để trống");
         }
 
-        try {
-            for (MultipartFile image : images) {
-                String imageUrl = cloudinaryService.uploadFile(image);
-                Image imageEntity = new Image();
-                imageEntity.setUrl(imageUrl);
-                imageEntity.setProduct(product);
-                product.getImages().add(imageEntity);
-            }
-        } catch (Exception e) {
-            throw new ThrowBadReqException("Lỗi khi tải lên ảnh");
+        if (mainImageIndex < 0 || mainImageIndex >= images.length) {
+            throw new ThrowBadReqException("Vị trí ảnh chính không hợp lệ");
         }
 
+        // Upload ảnh lên Cloudinary và tạo danh sách ảnh
+        List<Image> imageEntities = new ArrayList<>();
+        try {
+            for (int i = 0; i < images.length; i++) {
+                String imageUrl = cloudinaryService.uploadFile(images[i]);
+                Image imageEntity = new Image();
+                imageEntity.setUrl(imageUrl);
+                imageEntity.setMain(i == mainImageIndex); // Đánh dấu ảnh chính
+                imageEntities.add(imageEntity);
+            }
+        } catch (Exception e) {
+            throw new ThrowBadReqException("Lỗi khi tải lên ảnh: " + e.getMessage());
+        }
+
+        // Gán danh sách ảnh cho sản phẩm
+        product.setImages(imageEntities);
+
+        // Tạo sản phẩm
         Product createdProduct = productService.createProduct(product);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
     }
