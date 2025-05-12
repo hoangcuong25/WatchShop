@@ -4,7 +4,7 @@ import { FaUpload } from 'react-icons/fa';
 import React, { useState } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-    import ProductEditor from '@/components/Editor';
+import ProductEditor from '@/components/Editor';
 
 const categories = [
     'Luxury Watches',

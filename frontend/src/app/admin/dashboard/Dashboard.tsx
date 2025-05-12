@@ -77,8 +77,8 @@ export default function Dashboard() {
                             <p className="text-sm text-gray-500 dark:text-gray-400">Tổng đơn hàng</p>
                             <h3 className="text-2xl font-bold mt-2">1,234</h3>
                         </div>
-                        <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-full">
-                            <FaShoppingCart className="text-blue-600 dark:text-blue-300 text-xl" />
+                        <div className="p-3 bg-blue-500/10 rounded-full">
+                            <FaShoppingCart className="text-blue-500 text-xl" />
                         </div>
                     </div>
                 </Card>
@@ -89,8 +89,8 @@ export default function Dashboard() {
                             <p className="text-sm text-gray-500 dark:text-gray-400">Tổng doanh thu</p>
                             <h3 className="text-2xl font-bold mt-2">123.4M₫</h3>
                         </div>
-                        <div className="p-3 bg-green-100 dark:bg-green-900 rounded-full">
-                            <FaDollarSign className="text-green-600 dark:text-green-300 text-xl" />
+                        <div className="p-3 bg-green-500/10 rounded-full">
+                            <FaDollarSign className="text-green-500 text-xl" />
                         </div>
                     </div>
                 </Card>
@@ -101,8 +101,8 @@ export default function Dashboard() {
                             <p className="text-sm text-gray-500 dark:text-gray-400">Khách hàng</p>
                             <h3 className="text-2xl font-bold mt-2">856</h3>
                         </div>
-                        <div className="p-3 bg-purple-100 dark:bg-purple-900 rounded-full">
-                            <FaUsers className="text-purple-600 dark:text-purple-300 text-xl" />
+                        <div className="p-3 bg-purple-500/10 rounded-full">
+                            <FaUsers className="text-purple-500 text-xl" />
                         </div>
                     </div>
                 </Card>
@@ -113,8 +113,8 @@ export default function Dashboard() {
                             <p className="text-sm text-gray-500 dark:text-gray-400">Sản phẩm</p>
                             <h3 className="text-2xl font-bold mt-2">234</h3>
                         </div>
-                        <div className="p-3 bg-orange-100 dark:bg-orange-900 rounded-full">
-                            <FaBox className="text-orange-600 dark:text-orange-300 text-xl" />
+                        <div className="p-3 bg-orange-500/10 rounded-full">
+                            <FaBox className="text-orange-500 text-xl" />
                         </div>
                     </div>
                 </Card>
@@ -153,9 +153,9 @@ export default function Dashboard() {
                                     <p className="text-sm text-gray-500 dark:text-gray-400">{order.date}</p>
                                 </div>
                                 <div>
-                                    <span className={`px-2 py-1 rounded-full text-xs ${order.status === 'Đã giao' ? 'bg-green-100 text-green-800' :
-                                        order.status === 'Đang giao' ? 'bg-blue-100 text-blue-800' :
-                                            'bg-yellow-100 text-yellow-800'
+                                    <span className={`px-2 py-1 rounded-full text-xs ${order.status === 'Đã giao' ? 'bg-green-500/10 text-green-500' :
+                                        order.status === 'Đang giao' ? 'bg-blue-500/10 text-blue-500' :
+                                            'bg-yellow-500/10 text-yellow-500'
                                         }`}>
                                         {order.status}
                                     </span>
