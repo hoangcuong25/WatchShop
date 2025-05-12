@@ -8,5 +8,5 @@ import ChillGuy.WatchShop.domain.Product;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
-    
+    Boolean existsByName(String name);
 }

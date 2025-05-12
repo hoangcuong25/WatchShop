@@ -1,89 +1,69 @@
 'use client';
 
 import { FaUpload } from 'react-icons/fa';
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import ProductEditor from '@/components/Editor';
+import { AppContext } from '@/context/AppContext';
 
 const categories = [
-    'Đồng hồ nam',
-    'Đồng hồ nữ',
-    'Đồng hồ đôi',
-];
-
-const brands = [
-    'Rolex',
-    'Omega',
-    'TAG Heuer',
-    'Seiko',
-    'Citizen',
-    'Casio',
-];
-
-const machineTypes = [
-    'Automatic',
-    'Quartz',
-    'Mechanical',
-    'Solar',
-    'Kinetic',
+    { value: 'MAN', label: 'Đồng hồ nam' },
+    { value: 'WOMAN', label: 'Đồng hồ nữ' },
+    { value: 'COUPLE', label: 'Đồng hồ đôi' },
 ];
 
 const styles = [
-    'Classic',
-    'Modern',
-    'Sport',
-    'Vintage',
-    'Minimalist',
+    { value: 'CLASSIC', label: 'Cổ điển' },
+    { value: 'MODERN', label: 'Hiện đại' },
+    { value: 'SPORTS', label: 'Thể thao' },
+    { value: 'FANCY', label: 'Nghệ thuật' },
+    { value: 'ELEGANT', label: 'Trang nhã' },
+    { value: 'CASUAL', label: 'Thể thao' },
 ];
 
 const designs = [
-    'Round',
-    'Square',
-    'Rectangle',
-    'Oval',
-    'Tonneau',
-];
-
-const crystals = [
-    'Sapphire',
-    'Mineral',
-    'Hardlex',
-    'Acrylic',
-    'K1',
+    { value: 'SQUARE', label: 'Mặt vuông' },
+    { value: 'ROUND', label: 'Mặt tròn' },
+    { value: 'OVAL', label: 'Mặt oval' },
+    { value: 'RECTANGLE', label: 'Mặt chữ nhật' },
+    { value: 'ELSE', label: 'Khác' },
 ];
 
 const faceColors = [
-    'Black',
-    'White',
-    'Blue',
-    'Silver',
-    'Gold',
+    { value: 'BLACK', label: 'Đen' },
+    { value: 'WHITE', label: 'Trắng' },
+    { value: 'SILVER', label: 'Bạc' },
+    { value: 'GOLD', label: 'Vàng' },
+    { value: 'BROWN', label: 'Nâu' },
+    { value: 'BLUE', label: 'Xanh dương' },
+    { value: 'GREEN', label: 'Xanh lá' },
+    { value: 'RED', label: 'Đỏ' },
+    { value: 'YELLOW', label: 'Vàng' },
+    { value: 'PINK', label: 'Hồng' },
 ];
 
 const stringMaterials = [
-    'Stainless Steel',
-    'Leather',
-    'Rubber',
-    'Nylon',
-    'Titanium',
+    { value: 'LEATHER', label: 'Da' },
+    { value: 'METAL', label: 'Kim loại' },
+    { value: 'FIBER', label: 'Vải' },
 ];
 
 const caseMaterials = [
-    'Stainless Steel',
-    'Gold',
-    'Titanium',
-    'Ceramic',
-    'Plastic',
+    { value: 'STEEL', label: 'Thép' },
+    { value: 'GOLD', label: 'Vàng' },
+    { value: 'SILVER', label: 'Bạc' },
+    { value: 'TITANIUM', label: 'Titanium' },
 ];
 
 const brandOrigins = [
-    'Switzerland',
-    'Japan',
-    'Germany',
-    'USA',
-    'China',
+    { value: 'GERMANY', label: 'Đức' },
+    { value: 'SWITZERLAND', label: 'Thụy Sĩ' },
+    { value: 'JAPAN', label: 'Nhật Bản' },
+    { value: 'USA', label: 'Mỹ' },
 ];
 
 export default function AddProduct() {
+
+    const { brands, machineTypes, crystals } = useContext(AppContext);
 
     const [productName, setProductName] = useState('')
     const [description, setDescription] = useState('')
@@ -115,7 +95,7 @@ export default function AddProduct() {
                             >
                                 <option value="">Chọn thương hiệu</option>
                                 {brands.map(brand => (
-                                    <option key={brand} value={brand}>{brand}</option>
+                                    <option key={brand.id} value={brand.id}>{brand.name}</option>
                                 ))}
                             </select>
                         </div>
@@ -128,7 +108,7 @@ export default function AddProduct() {
                             >
                                 <option value="">Chọn danh mục</option>
                                 {categories.map(category => (
-                                    <option key={category} value={category}>{category}</option>
+                                    <option key={category.value} value={category.value}>{category.label}</option>
                                 ))}
                             </select>
                         </div>
@@ -192,7 +172,7 @@ export default function AddProduct() {
                             >
                                 <option value="">Chọn loại máy</option>
                                 {machineTypes.map(type => (
-                                    <option key={type} value={type}>{type}</option>
+                                    <option key={type.id} value={type.id}>{type.name}</option>
                                 ))}
                             </select>
                         </div>
@@ -205,7 +185,7 @@ export default function AddProduct() {
                             >
                                 <option value="">Chọn phong cách</option>
                                 {styles.map(style => (
-                                    <option key={style} value={style}>{style}</option>
+                                    <option key={style.value} value={style.value}>{style.label}</option>
                                 ))}
                             </select>
                         </div>
@@ -218,7 +198,7 @@ export default function AddProduct() {
                             >
                                 <option value="">Chọn thiết kế</option>
                                 {designs.map(design => (
-                                    <option key={design} value={design}>{design}</option>
+                                    <option key={design.value} value={design.value}>{design.label}</option>
                                 ))}
                             </select>
                         </div>
@@ -231,7 +211,7 @@ export default function AddProduct() {
                             >
                                 <option value="">Chọn mặt kính</option>
                                 {crystals.map(crystal => (
-                                    <option key={crystal} value={crystal}>{crystal}</option>
+                                    <option key={crystal.id} value={crystal.id}>{crystal.name}</option>
                                 ))}
                             </select>
                         </div>
@@ -244,7 +224,7 @@ export default function AddProduct() {
                             >
                                 <option value="">Chọn màu mặt</option>
                                 {faceColors.map(color => (
-                                    <option key={color} value={color}>{color}</option>
+                                    <option key={color.value} value={color.value}>{color.label}</option>
                                 ))}
                             </select>
                         </div>
@@ -257,7 +237,7 @@ export default function AddProduct() {
                             >
                                 <option value="">Chọn chất liệu dây</option>
                                 {stringMaterials.map(material => (
-                                    <option key={material} value={material}>{material}</option>
+                                    <option key={material.value} value={material.value}>{material.label}</option>
                                 ))}
                             </select>
                         </div>
@@ -270,7 +250,7 @@ export default function AddProduct() {
                             >
                                 <option value="">Chọn chất liệu vỏ</option>
                                 {caseMaterials.map(material => (
-                                    <option key={material} value={material}>{material}</option>
+                                    <option key={material.value} value={material.value}>{material.label}</option>
                                 ))}
                             </select>
                         </div>
@@ -283,7 +263,7 @@ export default function AddProduct() {
                             >
                                 <option value="">Chọn xuất xứ</option>
                                 {brandOrigins.map(origin => (
-                                    <option key={origin} value={origin}>{origin}</option>
+                                    <option key={origin.value} value={origin.value}>{origin.label}</option>
                                 ))}
                             </select>
                         </div>

@@ -1,6 +1,8 @@
 package ChillGuy.WatchShop.domain;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 import ChillGuy.WatchShop.util.SecurityUtil;
 import ChillGuy.WatchShop.util.constant.BrandOriginEnum;
@@ -16,9 +18,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -48,6 +52,8 @@ public class Product {
     @NotBlank(message = "Discount không được để trống")
     private String discount;
 
+    @NotNull(message = "Stock Quantity không được để trống")
+    @Min(value = 0, message = "Stock Quantity phải lớn hơn hoặc bằng 0")
     private Integer stockQuantity;
 
     @NotBlank(message = "Status không được để trống")
@@ -72,7 +78,7 @@ public class Product {
     @NotNull(message = "Design không được để trống")
     private DesignEnum design;
 
-    @NotNull(message = "Crystal không được để trống")
+    @NotBlank(message = "Crystal không được để trống")
     private String crystal;
 
     @NotNull(message = "Face Color không được để trống")
@@ -89,6 +95,9 @@ public class Product {
 
     @NotNull(message = "Brand Origin không được để trống")
     private BrandOriginEnum brandOrigin;
+
+    @OneToMany(mappedBy = "product", cascade = jakarta.persistence.CascadeType.ALL)
+    private List<Image> images = new ArrayList<>();
 
     private Instant createdAt;
     private Instant updatedAt;
