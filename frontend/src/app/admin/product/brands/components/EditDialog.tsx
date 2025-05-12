@@ -42,7 +42,7 @@ export default function EditDialog({ isOpen, onOpenChange, isLoading, selectedBr
         const formData = new FormData();
         formData.append('name', name);
         if (image) {
-            formData.append('image', image);
+            formData.append('file', image);
         }
         await onSubmit(formData);
     };

@@ -18,4 +18,10 @@ public class CloudinaryService {
         Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), Map.of());
         return uploadResult.get("secure_url").toString();
     }
+
+    public void deleteFile(String imageUrl) throws IOException {
+        // Extract public_id from the image URL
+        String publicId = imageUrl.substring(imageUrl.lastIndexOf("/") + 1, imageUrl.lastIndexOf("."));
+        cloudinary.uploader().destroy(publicId, Map.of());
+    }
 }

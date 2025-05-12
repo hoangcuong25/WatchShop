@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +18,6 @@ import ChillGuy.WatchShop.service.BrandService;
 import ChillGuy.WatchShop.service.CloudinaryService;
 import ChillGuy.WatchShop.util.annotation.ApiMessage;
 import ChillGuy.WatchShop.util.error.ThrowBadReqException;
-import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,8 +73,21 @@ public class BrandController {
     @PreAuthorize("hasRole('ADMIN')")
     @ApiMessage("Delete a brand")
     public ResponseEntity<Void> deleteBrand(@PathVariable Long id) throws ThrowBadReqException {
-        brandService.deleteBrand(id);
-        return ResponseEntity.noContent().build();
+        Brand brand = brandService.findById(id);
+        if (brand == null) {
+            throw new ThrowBadReqException("Thương hiệu không tồn tại");
+        }
+
+        try {
+            // Delete image from Cloudinary if exists
+            if (brand.getImage() != null) {
+                cloudinaryService.deleteFile(brand.getImage());
+            }
+            brandService.deleteBrand(id);
+            return ResponseEntity.noContent().build();
+        } catch (IOException e) {
+            throw new ThrowBadReqException("Xóa hình ảnh thất bại: " + e.getMessage());
+        }
     }
 
     @PutMapping("/brands/{id}")
@@ -89,11 +100,25 @@ public class BrandController {
 
         Brand currentBrand = brandService.findById(id);
         if (currentBrand == null) {
-            throw new ThrowBadReqException("Brand not found");
+            throw new ThrowBadReqException("Thương hiệu không tồn tại");
         }
 
         Brand brand = new Brand();
         brand.setName(name);
+
+        if (file != null) {
+            try {
+                // Delete old image from Cloudinary if exists
+                if (currentBrand.getImage() != null) {
+                    cloudinaryService.deleteFile(currentBrand.getImage());
+                }
+                // Upload new image
+                String imageUrl = cloudinaryService.uploadFile(file);
+                brand.setImage(imageUrl);
+            } catch (IOException e) {
+                throw new ThrowBadReqException("Upload thất bại: " + e.getMessage());
+            }
+        }
 
         Brand updatedBrand = brandService.updateBrand(currentBrand, brand);
         return ResponseEntity.ok(updatedBrand);
