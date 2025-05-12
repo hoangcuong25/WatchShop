@@ -3,12 +3,13 @@ import { Button } from "@/components/ui/button";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
 export default function CrystalsTable(
-    { crystals, setIsEditDialogOpen, setIsDeleteDialogOpen, setSelectedCrystalId }:
+    { crystals, setIsEditDialogOpen, setIsDeleteDialogOpen, setSelectedCrystalId, setSelectedCrystal }:
         {
             crystals: CrystalType[],
             setIsEditDialogOpen: (value: boolean) => void,
             setIsDeleteDialogOpen: (value: boolean) => void,
-            setSelectedCrystalId: (value: string) => void
+            setSelectedCrystalId: (value: string) => void,
+            setSelectedCrystal: (value: CrystalType | null) => void
         }) {
     return (
         <Card className="overflow-hidden border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm">
@@ -67,9 +68,10 @@ export default function CrystalsTable(
                                         <Button
                                             variant="ghost"
                                             size="icon"
-                                            onClick={() =>
+                                            onClick={() => {
                                                 setIsEditDialogOpen(true)
-                                            }
+                                                setSelectedCrystal(crystal)
+                                            }}
                                             className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/50"
                                         >
                                             <FaEdit className="w-4 h-4" />

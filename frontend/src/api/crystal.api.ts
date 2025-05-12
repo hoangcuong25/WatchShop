@@ -11,7 +11,7 @@ export const createCrystalApi = async (crystal: any) => {
 }
 
 export const updateCrystalApi = async (crystal: any) => {
-    const response = await axiosClient.put(`/api/v1/crystals/${crystal.id}`, crystal);
+    const response = await axiosClient.put(`/api/v1/crystals`, crystal);
     return response.data;
 }
 

@@ -28,8 +28,8 @@ export default function AddDialog(
                 name,
                 description
             }
-            await createCrystalApi(crystal);
-            setCrystals([...crystals, crystal as CrystalType]);
+            const response = await createCrystalApi(crystal);
+            setCrystals([...crystals, response.data as CrystalType]);
             setIsAddDialogOpen(false);
             toast.success('Thêm chất liệu mặt kính thành công');
         } catch (error: any) {

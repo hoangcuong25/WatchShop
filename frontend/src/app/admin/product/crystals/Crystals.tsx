@@ -34,7 +34,9 @@ export default function Crystals() {
     const { crystals, setCrystals } = useContext(AppContext);
 
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [selectedCrystal, setSelectedCrystal] = useState<CrystalType | null>(null);
 
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [selectedCrystalId, setSelectedCrystalId] = useState<string>('');
@@ -59,6 +61,7 @@ export default function Crystals() {
                 setIsEditDialogOpen={setIsEditDialogOpen}
                 setIsDeleteDialogOpen={setIsDeleteDialogOpen}
                 setSelectedCrystalId={setSelectedCrystalId}
+                setSelectedCrystal={setSelectedCrystal}
             />
 
             {/* Add Dialog */}
@@ -73,6 +76,9 @@ export default function Crystals() {
             <EditDialog
                 isEditDialogOpen={isEditDialogOpen}
                 setIsEditDialogOpen={setIsEditDialogOpen}
+                crystals={crystals}
+                setCrystals={setCrystals}
+                selectedCrystal={selectedCrystal}
             />
 
             {/* Delete Alert Dialog */}
