@@ -1,27 +1,8 @@
 'use client';
 
 import { useContext, useState } from 'react';
-import { FaPlus, FaEdit, FaTrash, FaSearch } from 'react-icons/fa';
-import { Card } from '@/components/ui/card';
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogFooter,
-} from '@/components/ui/dialog';
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+import { FaPlus } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import Search from './components/Search';
 import CrystalsTable from './components/CrystalsTable';
 import AddDialog from './components/AddDialog';
