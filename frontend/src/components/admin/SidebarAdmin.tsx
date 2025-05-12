@@ -41,7 +41,6 @@ const menuItems: MenuItem[] = [
         submenu: [
             { title: 'Danh sách sản phẩm', path: '/admin/products' },
             { title: 'Thêm sản phẩm', path: '/admin/product/add-product' },
-            { title: 'Danh mục', path: '/admin/product/categories' },
             { title: 'Thương hiệu', path: '/admin/product/brands' },
             { title: 'Loại máy', path: '/admin/product/machine-types' },
             { title: 'Mặt kính', path: '/admin/product/crystals' },

@@ -6,10 +6,10 @@ export default function Search() {
         <div className="relative">
             <Input
                 type="text"
-                placeholder="Tìm kiếm danh mục..."
+                placeholder="Tìm kiếm chất liệu mặt kính..."
                 className="pl-10 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus:border-blue-500 dark:focus:border-blue-500"
             />
             <FaSearch className="absolute left-3 top-3 text-slate-400" />
         </div>
-    );
+    )
 }
