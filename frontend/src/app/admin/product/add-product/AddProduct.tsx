@@ -1,6 +1,10 @@
 'use client';
 
 import { FaUpload } from 'react-icons/fa';
+import React, { useState } from 'react'
+import { useEditor, EditorContent } from '@tiptap/react'
+import StarterKit from '@tiptap/starter-kit'
+    import ProductEditor from '@/components/Editor';
 
 const categories = [
     'Luxury Watches',
@@ -19,7 +23,75 @@ const brands = [
     'Casio',
 ];
 
+const machineTypes = [
+    'Automatic',
+    'Quartz',
+    'Mechanical',
+    'Solar',
+    'Kinetic',
+];
+
+const styles = [
+    'Classic',
+    'Modern',
+    'Sport',
+    'Vintage',
+    'Minimalist',
+];
+
+const designs = [
+    'Round',
+    'Square',
+    'Rectangle',
+    'Oval',
+    'Tonneau',
+];
+
+const crystals = [
+    'Sapphire',
+    'Mineral',
+    'Hardlex',
+    'Acrylic',
+    'K1',
+];
+
+const faceColors = [
+    'Black',
+    'White',
+    'Blue',
+    'Silver',
+    'Gold',
+];
+
+const stringMaterials = [
+    'Stainless Steel',
+    'Leather',
+    'Rubber',
+    'Nylon',
+    'Titanium',
+];
+
+const caseMaterials = [
+    'Stainless Steel',
+    'Gold',
+    'Titanium',
+    'Ceramic',
+    'Plastic',
+];
+
+const brandOrigins = [
+    'Switzerland',
+    'Japan',
+    'Germany',
+    'USA',
+    'China',
+];
+
 export default function AddProduct() {
+
+    const [productName, setProductName] = useState('')
+    const [description, setDescription] = useState('')
+
     return (
         <div className="container mx-auto px-4 py-8">
             <h1 className="text-2xl font-bold mb-8">Thêm Sản Phẩm Mới</h1>
@@ -68,7 +140,7 @@ export default function AddProduct() {
                             <label className="block text-sm font-medium mb-2">Số Lượng</label>
                             <input
                                 type="number"
-                                name="stock"
+                                name="stockQuantity"
                                 className="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600"
                                 min="0"
                                 required
@@ -80,24 +152,152 @@ export default function AddProduct() {
                 {/* Pricing */}
                 <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
                     <h2 className="text-xl font-semibold mb-4">Giá</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
                             <label className="block text-sm font-medium mb-2">Giá Gốc</label>
                             <input
-                                type="number"
-                                name="price"
+                                type="text"
+                                name="oldPrice"
                                 className="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600"
-                                min="0"
                                 required
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium mb-2">Giá Khuyến Mãi</label>
+                            <label className="block text-sm font-medium mb-2">Giá Mới</label>
                             <input
-                                type="number"
-                                name="discountPrice"
+                                type="text"
+                                name="newPrice"
                                 className="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600"
-                                min="0"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-2">Khuyến Mãi (%)</label>
+                            <input
+                                type="text"
+                                name="discount"
+                                className="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600"
+                                required
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Technical Specifications */}
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <h2 className="text-xl font-semibold mb-4">Thông Số Kỹ Thuật</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label className="block text-sm font-medium mb-2">Loại Máy</label>
+                            <select
+                                name="machineType"
+                                className="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600"
+                                required
+                            >
+                                <option value="">Chọn loại máy</option>
+                                {machineTypes.map(type => (
+                                    <option key={type} value={type}>{type}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-2">Phong Cách</label>
+                            <select
+                                name="style"
+                                className="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600"
+                                required
+                            >
+                                <option value="">Chọn phong cách</option>
+                                {styles.map(style => (
+                                    <option key={style} value={style}>{style}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-2">Thiết Kế</label>
+                            <select
+                                name="design"
+                                className="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600"
+                                required
+                            >
+                                <option value="">Chọn thiết kế</option>
+                                {designs.map(design => (
+                                    <option key={design} value={design}>{design}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-2">Mặt Kính</label>
+                            <select
+                                name="crystal"
+                                className="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600"
+                                required
+                            >
+                                <option value="">Chọn mặt kính</option>
+                                {crystals.map(crystal => (
+                                    <option key={crystal} value={crystal}>{crystal}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-2">Màu Mặt</label>
+                            <select
+                                name="faceColor"
+                                className="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600"
+                                required
+                            >
+                                <option value="">Chọn màu mặt</option>
+                                {faceColors.map(color => (
+                                    <option key={color} value={color}>{color}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-2">Chất Liệu Dây</label>
+                            <select
+                                name="stringMaterial"
+                                className="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600"
+                                required
+                            >
+                                <option value="">Chọn chất liệu dây</option>
+                                {stringMaterials.map(material => (
+                                    <option key={material} value={material}>{material}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-2">Chất Liệu Vỏ</label>
+                            <select
+                                name="caseMaterial"
+                                className="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600"
+                                required
+                            >
+                                <option value="">Chọn chất liệu vỏ</option>
+                                {caseMaterials.map(material => (
+                                    <option key={material} value={material}>{material}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-2">Xuất Xứ</label>
+                            <select
+                                name="brandOrigin"
+                                className="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600"
+                                required
+                            >
+                                <option value="">Chọn xuất xứ</option>
+                                {brandOrigins.map(origin => (
+                                    <option key={origin} value={origin}>{origin}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-2">Đường Kính</label>
+                            <input
+                                type="text"
+                                name="diameter"
+                                className="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600"
+                                required
                             />
                         </div>
                     </div>
@@ -106,12 +306,7 @@ export default function AddProduct() {
                 {/* Description */}
                 <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
                     <h2 className="text-xl font-semibold mb-4">Mô Tả</h2>
-                    <textarea
-                        name="description"
-                        className="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600"
-                        rows={4}
-                        required
-                    />
+                    <ProductEditor content={description} setContent={setDescription} />
                 </div>
 
                 {/* Images */}
