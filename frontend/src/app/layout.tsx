@@ -23,8 +23,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geist.className} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className="min-h-screen bg-background">
-            <div className="max-w-[1440px] mx-auto">
+          <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+            <div className="max-w-[1440px] mx-auto bg-background">
               <AppContextProvider>
                 {children}
                 <Toaster />

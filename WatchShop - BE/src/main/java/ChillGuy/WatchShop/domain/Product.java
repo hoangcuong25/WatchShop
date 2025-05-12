@@ -3,6 +3,13 @@ package ChillGuy.WatchShop.domain;
 import java.time.Instant;
 
 import ChillGuy.WatchShop.util.SecurityUtil;
+import ChillGuy.WatchShop.util.constant.BrandOriginEnum;
+import ChillGuy.WatchShop.util.constant.CaseMaterialEnum;
+import ChillGuy.WatchShop.util.constant.CategoryEnum;
+import ChillGuy.WatchShop.util.constant.DesignEnum;
+import ChillGuy.WatchShop.util.constant.FaceColorEnum;
+import ChillGuy.WatchShop.util.constant.StringMaterialEnum;
+import ChillGuy.WatchShop.util.constant.StyleEnum;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -57,31 +64,31 @@ public class Product {
     private MachineType machineType;
 
     @NotNull(message = "Category không được để trống")
-    private String category;
+    private CategoryEnum category;
 
     @NotNull(message = "Style không được để trống")
-    private String style;
+    private StyleEnum style;
 
     @NotNull(message = "Design không được để trống")
-    private String design;
+    private DesignEnum design;
 
     @NotNull(message = "Crystal không được để trống")
     private String crystal;
 
     @NotNull(message = "Face Color không được để trống")
-    private String faceColor;
+    private FaceColorEnum faceColor;
 
     @NotNull(message = "Diameter không được để trống")
     private String diameter;
 
     @NotNull(message = "String Material không được để trống")
-    private String stringMaterial;
+    private StringMaterialEnum stringMaterial;
 
     @NotNull(message = "Case Material không được để trống")
-    private String caseMaterial;
+    private CaseMaterialEnum caseMaterial;
 
     @NotNull(message = "Brand Origin không được để trống")
-    private String brandOrigin;
+    private BrandOriginEnum brandOrigin;
 
     private Instant createdAt;
     private Instant updatedAt;

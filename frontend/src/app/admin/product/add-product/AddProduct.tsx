@@ -2,16 +2,12 @@
 
 import { FaUpload } from 'react-icons/fa';
 import React, { useState } from 'react'
-import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
 import ProductEditor from '@/components/Editor';
 
 const categories = [
-    'Luxury Watches',
-    'Sports Watches',
-    'Smart Watches',
-    'Classic Watches',
-    'Diving Watches',
+    'Đồng hồ nam',
+    'Đồng hồ nữ',
+    'Đồng hồ đôi',
 ];
 
 const brands = [
