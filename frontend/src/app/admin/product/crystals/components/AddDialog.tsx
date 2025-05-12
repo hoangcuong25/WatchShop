@@ -1,4 +1,4 @@
-import { createCrystal } from "@/api/crystal.api";
+import { createCrystalApi } from "@/api/crystal.api";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -26,7 +26,7 @@ export default function AddDialog(
                 name,
                 description
             }
-            await createCrystal(crystal);
+            await createCrystalApi(crystal);
             setIsAddDialogOpen(false);
             toast.success('Thêm chất liệu mặt kính thành công');
         } catch (error: any) {

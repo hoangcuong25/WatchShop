@@ -4,6 +4,7 @@
 'use client'
 
 import { getBrandsApi } from "@/api/brand.api";
+import { getCrystalsApi } from "@/api/crystal.api";
 import { getUserApi } from "@/api/user.api";
 import React, { createContext, ReactNode, useEffect, useState } from "react";
 
@@ -13,6 +14,8 @@ interface AppContextType {
     brands: BrandType[];
     setBrands: (brands: BrandType[]) => void;
     formatDate: (dateString: string) => string;
+    crystals: CrystalType[];
+    setCrystals: (crystals: CrystalType[]) => void;
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -21,6 +24,8 @@ export const AppContext = createContext<AppContextType>({
     brands: [],
     setBrands: () => { },
     formatDate: () => '',
+    crystals: [],
+    setCrystals: () => { },
 });
 
 interface AppContextProviderProps {
@@ -31,6 +36,7 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({ children }) => 
 
     const [user, setUser] = useState<UserType | null>(null);
     const [brands, setBrands] = useState<BrandType[]>([]);
+    const [crystals, setCrystals] = useState<CrystalType[]>([]);
 
     const formatDate = (dateString: string) => {
         if (!dateString) return '';
@@ -49,9 +55,9 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({ children }) => 
     const value = {
         user,
         setUser,
-        brands,
-        setBrands,
+        brands, setBrands,
         formatDate,
+        crystals, setCrystals,
     };
 
     const fetchUser = async () => {
@@ -64,9 +70,15 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({ children }) => 
         setBrands(response.data);
     };
 
+    const fetchCrystals = async () => {
+        const response = await getCrystalsApi();
+        setCrystals(response.data);
+    };
+
     useEffect(() => {
         fetchUser();
         fetchBrands();
+        fetchCrystals();
     }, []);
 
     return (

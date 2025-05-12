@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { FaPlus, FaEdit, FaTrash, FaSearch } from 'react-icons/fa';
 import { Card } from '@/components/ui/card';
 import {
@@ -27,30 +27,12 @@ import CrystalsTable from './components/CrystalsTable';
 import AddDialog from './components/AddDialog';
 import EditDialog from './components/EditDialog';
 import DeleteAlertDialog from './components/DeleteAlertDialog';
+import { AppContext } from '@/context/AppContext';
+
 export default function Crystals() {
-    const [crystals, setCrystals] = useState<CrystalType[]>([
-        {
-            id: 1,
-            name: 'Sapphire Crystal',
-            description: 'Mặt kính Sapphire chống trầy xước cao cấp',
-            createdAt: '2024-03-20',
-            updatedAt: '2024-03-20'
-        },
-        {
-            id: 2,
-            name: 'Mineral Crystal',
-            description: 'Mặt kính khoáng chất, độ bền tốt',
-            createdAt: '2024-03-20',
-            updatedAt: '2024-03-20'
-        },
-        {
-            id: 3,
-            name: 'Acrylic Crystal',
-            description: 'Mặt kính nhựa, dễ thay thế và sửa chữa',
-            createdAt: '2024-03-20',
-            updatedAt: '2024-03-20'
-        },
-    ]);
+
+    const { crystals } = useContext(AppContext);
+
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
