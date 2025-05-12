@@ -5,6 +5,7 @@
 
 import { getBrandsApi } from "@/api/brand.api";
 import { getCrystalsApi } from "@/api/crystal.api";
+import { getMachineTypes } from "@/api/MachineType.api";
 import { getUserApi } from "@/api/user.api";
 import React, { createContext, ReactNode, useEffect, useState } from "react";
 
@@ -16,6 +17,8 @@ interface AppContextType {
     formatDate: (dateString: string) => string;
     crystals: CrystalType[];
     setCrystals: (crystals: CrystalType[]) => void;
+    machineTypes: MachineTypeType[];
+    setMachineTypes: (machineTypes: MachineTypeType[]) => void;
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -26,6 +29,8 @@ export const AppContext = createContext<AppContextType>({
     formatDate: () => '',
     crystals: [],
     setCrystals: () => { },
+    machineTypes: [],
+    setMachineTypes: () => { },
 });
 
 interface AppContextProviderProps {
@@ -37,6 +42,7 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({ children }) => 
     const [user, setUser] = useState<UserType | null>(null);
     const [brands, setBrands] = useState<BrandType[]>([]);
     const [crystals, setCrystals] = useState<CrystalType[]>([]);
+    const [machineTypes, setMachineTypes] = useState<MachineTypeType[]>([]);
 
     const formatDate = (dateString: string) => {
         if (!dateString) return '';
@@ -58,27 +64,54 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({ children }) => 
         brands, setBrands,
         formatDate,
         crystals, setCrystals,
+        machineTypes, setMachineTypes,
     };
 
     const fetchUser = async () => {
-        const response = await getUserApi();
-        setUser(response.data);
+        try {
+            const response = await getUserApi();
+            setUser(response.data);
+        }
+        catch (error) {
+            console.error('Error fetching user:', error);
+        }
     };
 
     const fetchBrands = async () => {
-        const response = await getBrandsApi();
-        setBrands(response.data);
+        try {
+            const response = await getBrandsApi();
+            setBrands(response.data);
+        }
+        catch (error) {
+            console.error('Error fetching brands:', error);
+        }
     };
 
     const fetchCrystals = async () => {
-        const response = await getCrystalsApi();
-        setCrystals(response.data);
+        try {
+            const response = await getCrystalsApi();
+            setCrystals(response.data);
+        }
+        catch (error) {
+            console.error('Error fetching crystals:', error);
+        }
+    };
+
+    const fetchMachineTypes = async () => {
+        try {
+            const response = await getMachineTypes();
+            setMachineTypes(response.data);
+        }
+        catch (error) {
+            console.error('Error fetching machine types:', error);
+        }
     };
 
     useEffect(() => {
         fetchUser();
         fetchBrands();
         fetchCrystals();
+        fetchMachineTypes();
     }, []);
 
     return (
