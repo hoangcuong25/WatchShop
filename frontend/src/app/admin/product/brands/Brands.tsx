@@ -41,7 +41,7 @@ export default function Brands() {
 
         const formData = new FormData();
         formData.append('name', brandName);
-        formData.append('image', brandImage);
+        formData.append('file', brandImage);
 
         try {
             const response = await createBrandApi(formData);
@@ -146,6 +146,8 @@ export default function Brands() {
                         <Input
                             type="text"
                             placeholder="Nhập tên thương hiệu"
+                            value={brandName}
+                            onChange={(e) => setBrandName(e.target.value)}
                             className="bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 focus:border-blue-500 dark:focus:border-blue-500"
                         />
 

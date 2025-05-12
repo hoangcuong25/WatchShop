@@ -6,7 +6,13 @@ export const getBrandsApi = async () => {
 }
 
 export const createBrandApi = async (brand: FormData) => {
-    const response = await axiosClient.post('/api/v1/brands', brand);
+    const response = await axiosClient.post('/api/v1/brands', brand,
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }
+    );
     return response.data;
 }
 
