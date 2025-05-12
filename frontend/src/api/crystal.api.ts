@@ -10,6 +10,19 @@ export const createCrystalApi = async (crystal: any) => {
     return response.data;
 }
 
+export const updateCrystalApi = async (crystal: any) => {
+    const response = await axiosClient.put(`/api/v1/crystals/${crystal.id}`, crystal);
+    return response.data;
+}
+
+export const deleteCrystalApi = async (crystalId: string) => {
+    const response = await axiosClient.delete(`/api/v1/crystals/${crystalId}`);
+    return response.data;
+}
+
+
+
+
 
 
 

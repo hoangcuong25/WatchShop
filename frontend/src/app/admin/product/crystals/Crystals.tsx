@@ -31,11 +31,13 @@ import { AppContext } from '@/context/AppContext';
 
 export default function Crystals() {
 
-    const { crystals } = useContext(AppContext);
+    const { crystals, setCrystals } = useContext(AppContext);
 
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [selectedCrystalId, setSelectedCrystalId] = useState<string>('');
 
     return (
         <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 bg-slate-50 dark:bg-slate-900 min-h-screen">
@@ -56,12 +58,15 @@ export default function Crystals() {
                 crystals={crystals}
                 setIsEditDialogOpen={setIsEditDialogOpen}
                 setIsDeleteDialogOpen={setIsDeleteDialogOpen}
+                setSelectedCrystalId={setSelectedCrystalId}
             />
 
             {/* Add Dialog */}
             <AddDialog
                 isAddDialogOpen={isAddDialogOpen}
                 setIsAddDialogOpen={setIsAddDialogOpen}
+                setCrystals={setCrystals}
+                crystals={crystals}
             />
 
             {/* Edit Dialog */}
@@ -74,6 +79,9 @@ export default function Crystals() {
             <DeleteAlertDialog
                 isDeleteDialogOpen={isDeleteDialogOpen}
                 setIsDeleteDialogOpen={setIsDeleteDialogOpen}
+                selectedCrystalId={selectedCrystalId}
+                setCrystals={setCrystals}
+                crystals={crystals}
             />
 
         </div>

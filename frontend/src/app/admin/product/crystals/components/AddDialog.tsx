@@ -6,10 +6,12 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 export default function AddDialog(
-    { isAddDialogOpen, setIsAddDialogOpen }:
+    { isAddDialogOpen, setIsAddDialogOpen, setCrystals, crystals }:
         {
             isAddDialogOpen: boolean,
-            setIsAddDialogOpen: (value: boolean) => void
+            setIsAddDialogOpen: (value: boolean) => void,
+            setCrystals: (value: CrystalType[]) => void,
+            crystals: CrystalType[]
         }) {
 
     const [name, setName] = useState('');
@@ -27,6 +29,7 @@ export default function AddDialog(
                 description
             }
             await createCrystalApi(crystal);
+            setCrystals([...crystals, crystal as CrystalType]);
             setIsAddDialogOpen(false);
             toast.success('Thêm chất liệu mặt kính thành công');
         } catch (error: any) {
