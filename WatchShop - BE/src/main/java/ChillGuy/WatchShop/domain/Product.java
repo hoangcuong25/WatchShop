@@ -79,7 +79,9 @@ public class Product {
     private DesignEnum design;
 
     @NotBlank(message = "Crystal không được để trống")
-    private String crystal;
+    @ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @JoinColumn(name = "crystal_id", nullable = false)
+    private Crystals crystal;
 
     @NotNull(message = "Face Color không được để trống")
     private FaceColorEnum faceColor;

@@ -9,7 +9,6 @@ import ChillGuy.WatchShop.domain.response.ResCreateUserDTO;
 import ChillGuy.WatchShop.domain.response.ResLoginDTO;
 import ChillGuy.WatchShop.domain.response.ResUserDTO;
 import ChillGuy.WatchShop.repository.UserRepository;
-import ChillGuy.WatchShop.service.RedisService;
 
 @Service
 public class UserService {

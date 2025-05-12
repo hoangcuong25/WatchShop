@@ -9,7 +9,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,11 +22,7 @@ public class Image {
     private Long id;
 
     @NotBlank(message = "URL không được để trống")
-    @Pattern(regexp = "^(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})([/\\w .-]*)*/?$", message = "URL không hợp lệ")
     private String url;
-
-    @NotNull(message = "Trạng thái không được để trống")
-    private boolean isMain;
 
     @NotNull(message = "Product không được để trống")
     @ManyToOne
