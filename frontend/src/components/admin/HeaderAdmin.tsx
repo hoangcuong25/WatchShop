@@ -71,18 +71,6 @@ export default function HeaderAdmin() {
                         <h1 className="text-xl font-bold">Admin Dashboard</h1>
                     </div>
 
-                    {/* Search Bar */}
-                    <div className="hidden flex-1 max-w-2xl mx-8 lg:block">
-                        <div className="relative">
-                            <Input
-                                type="text"
-                                placeholder="Tìm kiếm..."
-                                className="w-full px-4 py-2 pl-10 bg-muted text-foreground rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600"
-                            />
-                            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xl" />
-                        </div>
-                    </div>
-
                     {/* Right Section */}
                     <div className="flex items-center space-x-6">
                         {/* Theme Toggle */}
