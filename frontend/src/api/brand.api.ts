@@ -21,4 +21,13 @@ export const deleteBrandApi = async (id: string) => {
     return response.data;
 }
 
-
+export const updateBrandApi = async (id: string, brand: FormData) => {
+    const response = await axiosClient.put(`/api/v1/brands/${id}`, brand,
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }
+    );
+    return response.data;
+}

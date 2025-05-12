@@ -3,13 +3,14 @@
 import { FaPlus } from 'react-icons/fa';
 import { Button } from "@/components/ui/button";
 import { useState, useContext } from 'react';
-import { createBrandApi } from '@/api/brand.api';
+import { createBrandApi, updateBrandApi } from '@/api/brand.api';
 import { toast } from 'sonner';
 import { AppContext } from '@/context/AppContext';
 import DeleteAlertDialog from './components/DeleteAlertDialog';
 import BrandsTable from './components/BrandsTable';
 import Search from './components/Search';
 import AddDialog from './components/AddDialog';
+import EditDialog from './components/EditDialog';
 
 export default function Brands() {
     const { brands, setBrands, formatDate } = useContext(AppContext);
@@ -20,6 +21,9 @@ export default function Brands() {
     const [isDeleteAlertDialogOpen, setIsDeleteAlertDialogOpen] = useState(false);
     const [selectedBrandId, setSelectedBrandId] = useState<string>('');
 
+    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [selectedBrand, setSelectedBrand] = useState<BrandType | null>(null);
+
     const handleAddBrand = async (formData: FormData) => {
         setIsLoading(true);
         try {
@@ -29,6 +33,24 @@ export default function Brands() {
             setBrands([...brands, response.data]);
         } catch (error: any) {
             toast.error(error.response.data.message || 'Lỗi khi tạo thương hiệu');
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    const handleEditBrand = async (formData: FormData) => {
+        if (!selectedBrand) return;
+
+        setIsLoading(true);
+        try {
+            const response = await updateBrandApi(selectedBrand.id.toString(), formData);
+            toast.success('Thương hiệu đã được cập nhật thành công');
+            setIsEditDialogOpen(false);
+            setBrands(brands.map(brand =>
+                brand.id === selectedBrand.id ? response.data : brand
+            ));
+        } catch (error: any) {
+            toast.error(error.response.data.message || 'Lỗi khi cập nhật thương hiệu');
         } finally {
             setIsLoading(false);
         }
@@ -56,6 +78,11 @@ export default function Brands() {
                 formatDate={formatDate}
                 setIsDeleteAlertDialogOpen={setIsDeleteAlertDialogOpen}
                 setSelectedBrandId={setSelectedBrandId}
+                onEditClick={(brand) => {
+                    setSelectedBrand(brand);
+                    setIsEditDialogOpen(true);
+                }}
+                setSelectedBrand={setSelectedBrand}
             />
 
             <AddDialog
@@ -63,6 +90,14 @@ export default function Brands() {
                 onOpenChange={setIsAddDialogOpen}
                 onSubmit={handleAddBrand}
                 isLoading={isLoading}
+            />
+
+            <EditDialog
+                isOpen={isEditDialogOpen}
+                onOpenChange={setIsEditDialogOpen}
+                isLoading={isLoading}
+                selectedBrand={selectedBrand}
+                onSubmit={handleEditBrand}
             />
 
             <DeleteAlertDialog

@@ -5,12 +5,14 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import Image from "next/image";
 
 export default function BrandsTable(
-    { isLoading, brands, formatDate, setIsDeleteAlertDialogOpen, setSelectedBrandId }: {
+    { isLoading, brands, formatDate, setIsDeleteAlertDialogOpen, setSelectedBrandId, onEditClick, setSelectedBrand }: {
         isLoading: boolean,
         brands: BrandType[],
         formatDate: (date: string) => string,
         setIsDeleteAlertDialogOpen: (isOpen: boolean) => void,
-        setSelectedBrandId: (id: string) => void
+        setSelectedBrandId: (id: string) => void,
+        onEditClick: (brand: BrandType) => void,
+        setSelectedBrand: (brand: BrandType | null) => void
     }) {
 
     return (
@@ -82,6 +84,10 @@ export default function BrandsTable(
                                                 size="icon"
                                                 className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/50"
                                                 disabled={isLoading}
+                                                onClick={() => {
+                                                    onEditClick(brand);
+                                                    setSelectedBrand(brand);
+                                                }}
                                             >
                                                 <FaEdit />
                                             </Button>
