@@ -102,4 +102,8 @@ public class ProductService {
             throw new ThrowBadReqException(e.getMessage());
         }
     }
+
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
 }

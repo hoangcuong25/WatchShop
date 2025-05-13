@@ -6,6 +6,7 @@
 import { getBrandsApi } from "@/api/brand.api";
 import { getCrystalsApi } from "@/api/crystal.api";
 import { getMachineTypes } from "@/api/MachineType.api";
+import { getAllProductsApi } from "@/api/Product.api";
 import { getUserApi } from "@/api/user.api";
 import React, { createContext, ReactNode, useEffect, useState } from "react";
 
@@ -19,6 +20,8 @@ interface AppContextType {
     setCrystals: (crystals: CrystalType[]) => void;
     machineTypes: MachineTypeType[];
     setMachineTypes: (machineTypes: MachineTypeType[]) => void;
+    products: ProductType[];
+    setProducts: (products: ProductType[]) => void;
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -31,6 +34,8 @@ export const AppContext = createContext<AppContextType>({
     setCrystals: () => { },
     machineTypes: [],
     setMachineTypes: () => { },
+    products: [],
+    setProducts: () => { },
 });
 
 interface AppContextProviderProps {
@@ -43,6 +48,7 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({ children }) => 
     const [brands, setBrands] = useState<BrandType[]>([]);
     const [crystals, setCrystals] = useState<CrystalType[]>([]);
     const [machineTypes, setMachineTypes] = useState<MachineTypeType[]>([]);
+    const [products, setProducts] = useState<ProductType[]>([]);
 
     const formatDate = (dateString: string) => {
         if (!dateString) return '';
@@ -65,6 +71,7 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({ children }) => 
         formatDate,
         crystals, setCrystals,
         machineTypes, setMachineTypes,
+        products, setProducts,
     };
 
     const fetchUser = async () => {
@@ -107,11 +114,22 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({ children }) => 
         }
     };
 
+    const fetchProducts = async () => {
+        try {
+            const response = await getAllProductsApi();
+            setProducts(response.data);
+        }
+        catch (error) {
+            console.error('Error fetching products:', error);
+        }
+    }
+
     useEffect(() => {
         fetchUser();
         fetchBrands();
         fetchCrystals();
         fetchMachineTypes();
+        fetchProducts();
     }, []);
 
     return (
