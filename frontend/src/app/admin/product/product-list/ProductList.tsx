@@ -8,13 +8,25 @@ import { AppContext } from '@/context/AppContext';
 
 export default function ProductList() {
     const router = useRouter();
-    const { products } = useContext(AppContext);
+    const {
+        products,
+        currentPage,
+        totalPages,
+        isLoading,
+        fetchProducts
+    } = useContext(AppContext);
     const [searchTerm, setSearchTerm] = useState('');
 
     const filteredProducts = products.filter(product =>
         product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.brandName.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    const handlePageChange = (newPage: number) => {
+        if (newPage >= 0 && newPage < totalPages) {
+            fetchProducts(newPage);
+        }
+    };
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -49,73 +61,100 @@ export default function ProductList() {
             </div>
 
             {/* Products Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {filteredProducts.map((product) => (
-                    <div key={product.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow">
-                        {/* Product Image */}
-                        <div className="relative h-48 w-full">
-                            <Image
-                                src={product.imageUrls[0]}
-                                alt={product.name}
-                                fill
-                                className="object-cover"
-                            />
-                            <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-lg text-sm">
-                                -{product.discount}%
+            {isLoading ? (
+                <div className="flex justify-center items-center min-h-[400px]">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                </div>
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {filteredProducts.map((product) => (
+                        <div key={product.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow">
+                            {/* Product Image */}
+                            <div className="relative aspect-square w-full">
+                                <Image
+                                    src={product.imageUrls[0]}
+                                    alt={product.name}
+                                    fill
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                    className="object-cover"
+                                    priority
+                                />
+                                <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-lg text-sm">
+                                    -{product.discount}%
+                                </div>
                             </div>
-                        </div>
 
-                        {/* Product Info */}
-                        <div className="p-4">
-                            <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2 line-clamp-1">
-                                {product.name}
-                            </h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
-                                {product.brandName}
-                            </p>
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="flex flex-col">
-                                    <span className="text-sm text-gray-500 dark:text-gray-400 line-through">
-                                        {product.oldPrice}
-                                    </span>
-                                    <span className="text-lg font-bold text-green-600">
-                                        {product.newPrice}
+                            {/* Product Info */}
+                            <div className="p-4">
+                                <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2 line-clamp-1">
+                                    {product.name}
+                                </h3>
+                                <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                                    {product.brandName}
+                                </p>
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="flex flex-col">
+                                        <span className="text-sm text-gray-500 dark:text-gray-400 line-through">
+                                            {product.oldPrice}
+                                        </span>
+                                        <span className="text-lg font-bold text-green-600">
+                                            {product.newPrice}
+                                        </span>
+                                    </div>
+                                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                                        Còn: {product.stockQuantity}
                                     </span>
                                 </div>
-                                <span className="text-sm text-gray-500 dark:text-gray-400">
-                                    Còn: {product.stockQuantity}
-                                </span>
-                            </div>
 
-                            {/* Action Buttons */}
-                            <div className="flex justify-end gap-2">
-                                <button
-                                    onClick={() => router.push(`/admin/product/edit/${product.id}`)}
-                                    className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                                >
-                                    <FaEdit className="w-5 h-5" />
-                                </button>
-                                <button
-                                    className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                                >
-                                    <FaTrash className="w-5 h-5" />
-                                </button>
+                                {/* Action Buttons */}
+                                <div className="flex justify-end gap-2">
+                                    <button
+                                        onClick={() => router.push(`/admin/product/edit/${product.id}`)}
+                                        className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                                    >
+                                        <FaEdit className="w-5 h-5" />
+                                    </button>
+                                    <button
+                                        className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                                    >
+                                        <FaTrash className="w-5 h-5" />
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
-            </div>
+                    ))}
+                </div>
+            )}
 
             {/* Pagination */}
             <div className="flex justify-center mt-8">
                 <nav className="flex items-center gap-2">
-                    <button className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                    <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 0}
+                        className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
                         Trước
                     </button>
-                    <button className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors">
-                        1
-                    </button>
-                    <button className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                    <div className="flex items-center gap-1">
+                        {Array.from({ length: totalPages }, (_, i) => (
+                            <button
+                                key={i}
+                                onClick={() => handlePageChange(i)}
+                                className={`px-4 py-2 rounded-lg ${currentPage === i
+                                    ? 'bg-blue-600 text-white'
+                                    : 'border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
+                                    } transition-colors`}
+                            >
+                                {i + 1}
+                            </button>
+                        ))}
+                    </div>
+                    <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages - 1}
+                        className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
                         Sau
                     </button>
                 </nav>

@@ -72,9 +72,9 @@ export const createProductApi = async (product: ProductState, images: File[]) =>
 }
 
 
-export const getAllProductsApi = async () => {
+export const getAllProductsApi = async (page: number, size: number) => {
     try {
-        const response = await axiosClient.get('/api/v1/products');
+        const response = await axiosClient.get(`/api/v1/products?page=${page}&size=${size}`);
         return response.data;
     } catch (error) {
         throw error;

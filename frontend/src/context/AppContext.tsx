@@ -10,6 +10,17 @@ import { getAllProductsApi } from "@/api/Product.api";
 import { getUserApi } from "@/api/user.api";
 import React, { createContext, ReactNode, useEffect, useState } from "react";
 
+interface PageResponse<T> {
+    content: T[];
+    totalPages: number;
+    totalElements: number;
+    size: number;
+    number: number;
+    first: boolean;
+    last: boolean;
+    empty: boolean;
+}
+
 interface AppContextType {
     user: UserType | null;
     setUser: (user: UserType | null) => void;
@@ -22,6 +33,12 @@ interface AppContextType {
     setMachineTypes: (machineTypes: MachineTypeType[]) => void;
     products: ProductType[];
     setProducts: (products: ProductType[]) => void;
+    currentPage: number;
+    setCurrentPage: (page: number) => void;
+    totalPages: number;
+    setTotalPages: (pages: number) => void;
+    isLoading: boolean;
+    fetchProducts: (page: number) => Promise<void>;
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -36,6 +53,12 @@ export const AppContext = createContext<AppContextType>({
     setMachineTypes: () => { },
     products: [],
     setProducts: () => { },
+    currentPage: 0,
+    setCurrentPage: () => { },
+    totalPages: 0,
+    setTotalPages: () => { },
+    isLoading: false,
+    fetchProducts: async () => { },
 });
 
 interface AppContextProviderProps {
@@ -43,12 +66,14 @@ interface AppContextProviderProps {
 }
 
 const AppContextProvider: React.FC<AppContextProviderProps> = ({ children }) => {
-
     const [user, setUser] = useState<UserType | null>(null);
     const [brands, setBrands] = useState<BrandType[]>([]);
     const [crystals, setCrystals] = useState<CrystalType[]>([]);
     const [machineTypes, setMachineTypes] = useState<MachineTypeType[]>([]);
     const [products, setProducts] = useState<ProductType[]>([]);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
 
     const formatDate = (dateString: string) => {
         if (!dateString) return '';
@@ -64,14 +89,39 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({ children }) => 
         }).format(date);
     };
 
+    const fetchProducts = async (page: number) => {
+        try {
+            setIsLoading(true);
+            const response = await getAllProductsApi(page, 12);
+            const data = response.data as PageResponse<ProductType>;
+            setProducts(data.content);
+            setTotalPages(data.totalPages);
+            setCurrentPage(data.number);
+        } catch (error) {
+            console.error('Error fetching products:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     const value = {
         user,
         setUser,
-        brands, setBrands,
+        brands,
+        setBrands,
         formatDate,
-        crystals, setCrystals,
-        machineTypes, setMachineTypes,
-        products, setProducts,
+        crystals,
+        setCrystals,
+        machineTypes,
+        setMachineTypes,
+        products,
+        setProducts,
+        currentPage,
+        setCurrentPage,
+        totalPages,
+        setTotalPages,
+        isLoading,
+        fetchProducts,
     };
 
     const fetchUser = async () => {
@@ -114,22 +164,12 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({ children }) => 
         }
     };
 
-    const fetchProducts = async () => {
-        try {
-            const response = await getAllProductsApi();
-            setProducts(response.data);
-        }
-        catch (error) {
-            console.error('Error fetching products:', error);
-        }
-    }
-
     useEffect(() => {
         fetchUser();
         fetchBrands();
         fetchCrystals();
         fetchMachineTypes();
-        fetchProducts();
+        fetchProducts(0); // Fetch first page initially
     }, []);
 
     return (

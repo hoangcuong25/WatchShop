@@ -3,6 +3,8 @@ package ChillGuy.WatchShop.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,8 +20,10 @@ import ChillGuy.WatchShop.repository.ImageRepository;
 import ChillGuy.WatchShop.repository.MachineTypeRepository;
 import ChillGuy.WatchShop.repository.ProductRepository;
 import ChillGuy.WatchShop.util.error.ThrowBadReqException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
     private final ImageRepository imageRepository;
@@ -27,17 +31,6 @@ public class ProductService {
     private final BrandRepository brandRepository;
     private final MachineTypeRepository machineTypeRepository;
     private final CrystalsRepository crystalsRepository;
-
-    public ProductService(ProductRepository productRepository, ImageRepository imageRepository,
-            BrandRepository brandRepository, MachineTypeRepository machineTypeRepository,
-            CrystalsRepository crystalsRepository, CloudinaryService cloudinaryService) {
-        this.productRepository = productRepository;
-        this.imageRepository = imageRepository;
-        this.brandRepository = brandRepository;
-        this.machineTypeRepository = machineTypeRepository;
-        this.crystalsRepository = crystalsRepository;
-        this.cloudinaryService = cloudinaryService;
-    }
 
     public Boolean getProductByName(String name) {
         return productRepository.existsByName(name);
@@ -103,7 +96,7 @@ public class ProductService {
         }
     }
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public Page<Product> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable);
     }
 }
