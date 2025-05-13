@@ -39,6 +39,7 @@ interface AppContextType {
     setTotalPages: (pages: number) => void;
     isLoading: boolean;
     fetchProducts: (page: number) => Promise<void>;
+    formatCompactDescription: (text: string) => string;
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -59,6 +60,7 @@ export const AppContext = createContext<AppContextType>({
     setTotalPages: () => { },
     isLoading: false,
     fetchProducts: async () => { },
+    formatCompactDescription: () => '',
 });
 
 interface AppContextProviderProps {
@@ -89,6 +91,24 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({ children }) => 
         }).format(date);
     };
 
+    const formatCompactDescription = (text: string) => {
+        // Tìm tất cả các cụm dạng "Tựa đề: "
+        const regex = /([A-ZÀ-Ỹa-zà-ỹ0-9\s]+?):/g;
+        const matches = Array.from(text.matchAll(regex));
+
+        const result: string[] = [];
+
+        for (let i = 0; i < matches.length; i++) {
+            const start = matches[i].index! + matches[i][0].length;
+            const end = i + 1 < matches.length ? matches[i + 1].index! : text.length;
+            const key = matches[i][1].trim();
+            const value = text.slice(start, end).trim();
+            result.push(`${key}: ${value}`);
+        }
+
+        return result.join('\n');
+    };
+
     const fetchProducts = async (page: number) => {
         try {
             setIsLoading(true);
@@ -114,6 +134,7 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({ children }) => 
         currentPage, setCurrentPage,
         totalPages, setTotalPages, isLoading,
         fetchProducts,
+        formatCompactDescription
     };
 
     const fetchUser = async () => {

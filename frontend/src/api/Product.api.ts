@@ -80,3 +80,12 @@ export const getAllProductsApi = async (page: number, size: number) => {
         throw error;
     }
 }
+
+export const getProductByIdApi = async (id: string) => {
+    try {
+        const response = await axiosClient.get(`/api/v1/products/${id}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}

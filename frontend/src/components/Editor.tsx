@@ -12,6 +12,12 @@ import Blockquote from '@tiptap/extension-blockquote'
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import CodeBlock from '@tiptap/extension-code-block'
 
+export const convertHtmlToPlainText = (html: string): string => {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    return tempDiv.textContent || tempDiv.innerText || '';
+};
+
 export default function ProductEditor({
     content,
     setContent,

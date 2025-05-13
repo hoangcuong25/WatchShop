@@ -1,79 +1,45 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { useParams } from 'next/navigation';
-import { FaHeart, FaRegHeart, FaShoppingCart, FaStar } from 'react-icons/fa';
-import { motion } from 'framer-motion';
-
-interface Product {
-    id: string;
-    name: string;
-    price: number;
-    description: string;
-    images: string[];
-    specifications: {
-        brand: string;
-        model: string;
-        movement: string;
-        case: string;
-        strap: string;
-        waterResistance: string;
-    };
-    rating: number;
-    reviews: number;
-    stock: number;
-}
+import Image from "next/image";
+import { FaRegHeart, FaShoppingCart, FaStar } from "react-icons/fa";
+import { useParams } from "next/navigation";
+import { getProductByIdApi } from "@/api/Product.api";
+import { useContext, useEffect, useState } from "react";
+import { convertHtmlToPlainText } from "@/components/Editor";
+import { AppContext } from "@/context/AppContext";
 
 export default function ProductDetail() {
-    const params = useParams();
-    const [product, setProduct] = useState<Product | null>(null);
-    const [selectedImage, setSelectedImage] = useState(0);
-    const [isWishlist, setIsWishlist] = useState(false);
-    const [quantity, setQuantity] = useState(1);
 
-    useEffect(() => {
-        // TODO: Fetch product data from API
-        // This is mock data for demonstration
-        setProduct({
-            id: params.id as string,
-            name: "Rolex Submariner Date",
-            price: 1250000000,
-            description: "The Rolex Submariner Date is a legendary diving watch that has become an icon of luxury watchmaking. With its distinctive design and exceptional performance, it's the perfect companion for underwater exploration.",
-            images: [
-                "/images/watch1.jpg",
-                "/images/watch2.jpg",
-                "/images/watch3.jpg",
-                "/images/watch4.jpg"
-            ],
-            specifications: {
-                brand: "Rolex",
-                model: "Submariner Date",
-                movement: "Automatic",
-                case: "Stainless Steel, 41mm",
-                strap: "Oyster Bracelet",
-                waterResistance: "300m / 1000ft"
-            },
-            rating: 4.8,
-            reviews: 128,
-            stock: 5
-        });
-    }, [params.id]);
+    const { formatCompactDescription } = useContext(AppContext);
 
-    if (!product) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-            </div>
-        );
+    const { id } = useParams();
+    const [product, setProduct] = useState<ProductType | null>(null);
+    const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const handleGetProductById = async () => {
+        try {
+            setIsLoading(true);
+            const response = await getProductByIdApi(id as string);
+            setProduct(response.data);
+        } catch (error) {
+            setError(error as string);
+        } finally {
+            setIsLoading(false);
+        }
     }
 
-    const formatPrice = (price: number) => {
-        return new Intl.NumberFormat('vi-VN', {
-            style: 'currency',
-            currency: 'VND'
-        }).format(price);
-    };
+    useEffect(() => {
+        handleGetProductById();
+    }, []);
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -82,27 +48,25 @@ export default function ProductDetail() {
                 <div className="space-y-4">
                     <div className="relative aspect-square rounded-lg overflow-hidden">
                         <Image
-                            src={product.images[selectedImage]}
-                            alt={product.name}
+                            src="/images/watch1.jpg"
+                            alt="Watch"
                             fill
                             className="object-cover"
                         />
                     </div>
                     <div className="grid grid-cols-4 gap-4">
-                        {product.images.map((image, index) => (
-                            <button
+                        {(product?.imageUrls || []).map((image, index) => (
+                            <div
                                 key={index}
-                                onClick={() => setSelectedImage(index)}
-                                className={`relative aspect-square rounded-lg overflow-hidden ${selectedImage === index ? 'ring-2 ring-blue-500' : ''
-                                    }`}
+                                className="relative aspect-square rounded-lg overflow-hidden"
                             >
                                 <Image
                                     src={image}
-                                    alt={`${product.name} - Image ${index + 1}`}
+                                    alt={`Watch ${index}`}
                                     fill
                                     className="object-cover"
                                 />
-                            </button>
+                            </div>
                         ))}
                     </div>
                 </div>
@@ -111,75 +75,54 @@ export default function ProductDetail() {
                 <div className="space-y-6">
                     <div>
                         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                            {product.name}
+                            {product?.name}
                         </h1>
                         <div className="flex items-center mt-2 space-x-2">
                             <div className="flex items-center">
                                 {[...Array(5)].map((_, i) => (
                                     <FaStar
                                         key={i}
-                                        className={`w-5 h-5 ${i < Math.floor(product.rating)
-                                            ? 'text-yellow-400'
-                                            : 'text-gray-300'
-                                            }`}
+                                        className="w-5 h-5 text-yellow-400"
                                     />
                                 ))}
                             </div>
                             <span className="text-gray-600 dark:text-gray-400">
-                                ({product.reviews} đánh giá)
+                                (128 đánh giá)
                             </span>
                         </div>
                     </div>
 
-                    <div className="text-3xl font-bold text-blue-600">
-                        {formatPrice(product.price)}
+                    <div className="text-3xl font-bold text-blue-600 flex items-center gap-2">
+                        <p>{product?.newPrice} ₫</p>
+                        <p className="line-through text-xl text-gray-500">{product?.oldPrice} ₫</p>
                     </div>
 
                     <p className="text-gray-600 dark:text-gray-400">
-                        {product.description}
+                        {formatCompactDescription(convertHtmlToPlainText(product?.description || ''))}
                     </p>
 
                     <div className="space-y-4">
                         <div className="flex items-center space-x-4">
                             <span className="text-gray-700 dark:text-gray-300">Số lượng:</span>
                             <div className="flex items-center space-x-2">
-                                <button
-                                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                    className="px-3 py-1 border rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-                                >
+                                <button className="px-3 py-1 border rounded-md hover:bg-gray-100 dark:hover:bg-gray-800">
                                     -
                                 </button>
-                                <span className="w-12 text-center">{quantity}</span>
-                                <button
-                                    onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                                    className="px-3 py-1 border rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-                                >
+                                <span className="w-12 text-center">1</span>
+                                <button className="px-3 py-1 border rounded-md hover:bg-gray-100 dark:hover:bg-gray-800">
                                     +
                                 </button>
                             </div>
                         </div>
 
                         <div className="flex space-x-4">
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors"
-                            >
+                            <button className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors">
                                 <FaShoppingCart className="inline-block mr-2" />
                                 Thêm vào giỏ
-                            </motion.button>
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={() => setIsWishlist(!isWishlist)}
-                                className="p-3 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                            >
-                                {isWishlist ? (
-                                    <FaHeart className="w-6 h-6 text-red-500" />
-                                ) : (
-                                    <FaRegHeart className="w-6 h-6" />
-                                )}
-                            </motion.button>
+                            </button>
+                            <button className="p-3 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                                <FaRegHeart className="w-6 h-6" />
+                            </button>
                         </div>
                     </div>
 
@@ -189,27 +132,27 @@ export default function ProductDetail() {
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <p className="text-gray-600 dark:text-gray-400">Thương hiệu</p>
-                                <p className="font-medium">{product.specifications.brand}</p>
+                                <p className="font-medium">Rolex</p>
                             </div>
                             <div>
                                 <p className="text-gray-600 dark:text-gray-400">Model</p>
-                                <p className="font-medium">{product.specifications.model}</p>
+                                <p className="font-medium">Submariner Date</p>
                             </div>
                             <div>
                                 <p className="text-gray-600 dark:text-gray-400">Bộ máy</p>
-                                <p className="font-medium">{product.specifications.movement}</p>
+                                <p className="font-medium">Automatic</p>
                             </div>
                             <div>
                                 <p className="text-gray-600 dark:text-gray-400">Vỏ máy</p>
-                                <p className="font-medium">{product.specifications.case}</p>
+                                <p className="font-medium">Stainless Steel, 41mm</p>
                             </div>
                             <div>
                                 <p className="text-gray-600 dark:text-gray-400">Dây đeo</p>
-                                <p className="font-medium">{product.specifications.strap}</p>
+                                <p className="font-medium">Oyster Bracelet</p>
                             </div>
                             <div>
                                 <p className="text-gray-600 dark:text-gray-400">Chống nước</p>
-                                <p className="font-medium">{product.specifications.waterResistance}</p>
+                                <p className="font-medium">300m / 1000ft</p>
                             </div>
                         </div>
                     </div>
