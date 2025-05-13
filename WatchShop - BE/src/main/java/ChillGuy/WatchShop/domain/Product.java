@@ -22,6 +22,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -41,6 +42,7 @@ public class Product {
     private String name;
 
     @NotBlank(message = "Description không được để trống")
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String description;
 
     @NotBlank(message = "Old Price không được để trống")

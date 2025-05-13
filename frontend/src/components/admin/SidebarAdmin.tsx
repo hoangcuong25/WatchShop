@@ -39,7 +39,7 @@ const menuItems: MenuItem[] = [
         path: '/admin/products',
         icon: <FaBox className="w-5 h-5" />,
         submenu: [
-            { title: 'Danh sách sản phẩm', path: '/admin/products' },
+            { title: 'Danh sách sản phẩm', path: '/admin/product/product-list' },
             { title: 'Thêm sản phẩm', path: '/admin/product/add-product' },
             { title: 'Thương hiệu', path: '/admin/product/brands' },
             { title: 'Loại máy', path: '/admin/product/machine-types' },
