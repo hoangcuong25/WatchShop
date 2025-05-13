@@ -8,7 +8,7 @@ import { categories, styles, designs, faceColors, stringMaterials, caseMaterials
 import { createProductApi } from '@/api/Product.api';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-
+import { TrashIcon } from 'lucide-react';
 interface ProductState {
     productName: string;
     description: string;
@@ -386,13 +386,23 @@ export default function AddProduct() {
                                 accept="image/*"
                                 className="hidden"
                                 multiple
-                                onChange={(e) => setImages(Array.from(e.target.files || []))}
+                                onChange={(e) => {
+                                    const newImages = Array.from(e.target.files || []);
+                                    setImages(prevImages => [...prevImages, ...newImages]);
+                                }}
                             />
                             <FaUpload className="w-8 h-8 text-gray-400" />
                         </label>
                         {images.map((image, index) => (
                             <div key={index} className="relative">
                                 <img src={URL.createObjectURL(image)} alt={`Hình ảnh ${index + 1}`} className="w-full h-full object-cover" />
+                                <button
+                                    type="button"
+                                    onClick={() => setImages(prevImages => prevImages.filter((_, i) => i !== index))}
+                                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                                >
+                                    <TrashIcon className="w-4 h-4" />
+                                </button>
                             </div>
                         ))}
                     </div>
