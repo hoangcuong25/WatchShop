@@ -3,6 +3,13 @@ export { };
 declare global {
     type GenderEnum = 'MALE' | 'FEMALE' | 'OTHER';
     type RoleEnum = 'USER' | 'ADMIN';
+    type CategoryEnum = 'MEN' | 'WOMEN' | 'UNISEX';
+    type StyleEnum = 'CLASSIC' | 'SPORT' | 'LUXURY' | 'CASUAL';
+    type DesignEnum = 'ANALOG' | 'DIGITAL' | 'CHRONOGRAPH';
+    type FaceColorEnum = 'BLACK' | 'WHITE' | 'BLUE' | 'SILVER' | 'GOLD';
+    type StringMaterialEnum = 'LEATHER' | 'METAL' | 'RUBBER' | 'NYLON';
+    type CaseMaterialEnum = 'STAINLESS_STEEL' | 'GOLD' | 'TITANIUM' | 'CERAMIC';
+    type BrandOriginEnum = 'SWITZERLAND' | 'JAPAN' | 'GERMANY' | 'USA' | 'OTHER';
 
     type UserType = {
         id: number;
@@ -58,12 +65,23 @@ declare global {
         id: number;
         name: string;
         description: string;
-        price: number;
-        quantity: number;
-        image: string;
-        brand?: BrandType;
-        crystal?: CrystalType;
-        machineType?: MachineTypeType;
+        oldPrice: string;
+        newPrice: string;
+        discount: string;
+        stockQuantity: number;
+        status: string;
+        brandName: string;
+        machineTypeName: string;
+        crystalName: string;
+        category: CategoryEnum;
+        style: StyleEnum;
+        design: DesignEnum;
+        faceColor: FaceColorEnum;
+        diameter: string;
+        stringMaterial: StringMaterialEnum;
+        caseMaterial: CaseMaterialEnum;
+        brandOrigin: BrandOriginEnum;
+        imageUrls: string[];
         createdAt?: string;
         updatedAt?: string;
         createdBy?: string;
