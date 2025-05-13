@@ -4,34 +4,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import ChillGuy.WatchShop.domain.Image;
 import ChillGuy.WatchShop.domain.Product;
 import ChillGuy.WatchShop.domain.request.ProductRequestDTO;
-import ChillGuy.WatchShop.service.CloudinaryService;
 import ChillGuy.WatchShop.service.ProductService;
 import ChillGuy.WatchShop.util.annotation.ApiMessage;
 import ChillGuy.WatchShop.util.error.ThrowBadReqException;
 import jakarta.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
 public class ProductController {
 
     private final ProductService productService;
-    private final CloudinaryService cloudinaryService;
 
-    public ProductController(ProductService productService, CloudinaryService cloudinaryService) {
+    public ProductController(ProductService productService) {
         this.productService = productService;
-        this.cloudinaryService = cloudinaryService;
     }
 
     @PostMapping("/products")

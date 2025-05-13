@@ -69,6 +69,11 @@ public class Product {
     @JoinColumn(name = "machine_type_id", nullable = false)
     private MachineType machineType;
 
+    @NotNull(message = "Crystal không được để trống")
+    @ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @JoinColumn(name = "crystal_id", nullable = false)
+    private Crystals crystal;
+
     @NotNull(message = "Category không được để trống")
     private CategoryEnum category;
 
@@ -77,11 +82,6 @@ public class Product {
 
     @NotNull(message = "Design không được để trống")
     private DesignEnum design;
-
-    @NotBlank(message = "Crystal không được để trống")
-    @ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @JoinColumn(name = "crystal_id", nullable = false)
-    private Crystals crystal;
 
     @NotNull(message = "Face Color không được để trống")
     private FaceColorEnum faceColor;

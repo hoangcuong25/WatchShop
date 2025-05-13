@@ -71,7 +71,7 @@ public class UserController {
     public ResponseEntity<Void> deleteUserById(@PathVariable("id") long id)
             throws ThrowBadReqException {
         // Check if current user is admin
-        String email = SecurityUtil.getCurrentUserLogin()
+        SecurityUtil.getCurrentUserLogin()
                 .orElseThrow(() -> new ThrowBadReqException("Không tìm thấy người dùng"));
 
         User user = this.userService.getUserById(id);
