@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useContext, useState } from 'react';
 import { AppContext } from '@/context/AppContext';
+import FilterButton from '@/components/FilterButton';
 
 export default function ProductList() {
     const router = useRouter();
@@ -16,11 +17,6 @@ export default function ProductList() {
         fetchProducts
     } = useContext(AppContext);
     const [searchTerm, setSearchTerm] = useState('');
-
-    const filteredProducts = products.filter(product =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.brandName.toLowerCase().includes(searchTerm.toLowerCase())
-    );
 
     const handlePageChange = (newPage: number) => {
         if (newPage >= 0 && newPage < totalPages) {
@@ -54,9 +50,8 @@ export default function ProductList() {
                         />
                         <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     </div>
-                    <button className="bg-gray-100 dark:bg-gray-700 px-6 py-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center gap-2">
-                        <FaFilter /> Bộ Lọc
-                    </button>
+
+                    <FilterButton />
                 </div>
             </div>
 
@@ -67,7 +62,7 @@ export default function ProductList() {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {filteredProducts.map((product) => (
+                    {products.map((product) => (
                         <div key={product.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow">
                             {/* Product Image */}
                             <div className="relative aspect-square w-full">

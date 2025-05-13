@@ -105,22 +105,14 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({ children }) => 
     };
 
     const value = {
-        user,
-        setUser,
-        brands,
-        setBrands,
+        user, setUser,
+        brands, setBrands,
         formatDate,
-        crystals,
-        setCrystals,
-        machineTypes,
-        setMachineTypes,
-        products,
-        setProducts,
-        currentPage,
-        setCurrentPage,
-        totalPages,
-        setTotalPages,
-        isLoading,
+        crystals, setCrystals,
+        machineTypes, setMachineTypes,
+        products, setProducts,
+        currentPage, setCurrentPage,
+        totalPages, setTotalPages, isLoading,
         fetchProducts,
     };
 
@@ -169,7 +161,7 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({ children }) => 
         fetchBrands();
         fetchCrystals();
         fetchMachineTypes();
-        fetchProducts(0); // Fetch first page initially
+        fetchProducts(0);
     }, []);
 
     return (
