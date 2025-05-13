@@ -99,4 +99,9 @@ public class ProductService {
     public Page<Product> getAllProducts(Pageable pageable) {
         return productRepository.findAll(pageable);
     }
+
+    public Product getProductById(Long id) throws ThrowBadReqException {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new ThrowBadReqException("Không tìm thấy sản phẩm"));
+    }
 }
