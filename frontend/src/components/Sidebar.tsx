@@ -28,6 +28,8 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
         email: string;
         avatar?: string;
     };
+    isMobileOpen?: boolean;
+    onMobileClose?: () => void;
 }
 
 const menuItems = [
@@ -69,39 +71,42 @@ const user = {
     avatar: "/placeholder-avatar.jpg"
 };
 
-export function Sidebar({ className, ...props }: SidebarProps) {
+export function Sidebar({ className, isMobileOpen, onMobileClose, ...props }: SidebarProps) {
     const pathname = usePathname();
     const [isCollapsed, setIsCollapsed] = useState(false);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    const toggleSidebar = () => {
-        setIsCollapsed(!isCollapsed);
-    };
-
-    const toggleMobileMenu = () => {
-        setIsMobileMenuOpen(!isMobileMenuOpen);
-    };
-
+    // Sidebar content (shared for both mobile and desktop)
     const sidebarContent = (
-        <div className={cn(
-            "h-screen bg-white dark:bg-[#0b0d16] text-gray-800 dark:text-white border-r border-gray-200 dark:border-white/10 overflow-y-auto transition-all duration-300",
-            isCollapsed ? "w-20" : "w-64",
-            className
-        )} {...props}>
-            <div className="p-4">
+        <div
+            className={cn(
+                "h-screen bg-white dark:bg-[#0b0d16] text-gray-800 dark:text-white border-r border-gray-200 dark:border-white/10 transition-all duration-300 flex flex-col w-64 md:relative md:translate-x-0 md:z-0",
+                // Mobile: slide in/out
+                isMobileOpen ? "fixed inset-y-0 left-0 z-50 translate-x-0" : "-translate-x-full fixed inset-y-0 left-0 z-50 md:translate-x-0 md:relative md:block",
+                "md:block", // always block on md+
+                className
+            )}
+            style={{
+                transition: 'transform 0.2s',
+            }}
+            {...props}
+        >
+            <div className="px-3 py-4 flex-1 flex flex-col">
                 <div className="flex items-center justify-between mb-8">
                     {!isCollapsed && <h1 className="text-xl font-bold text-gray-900 dark:text-white">Tài khoản</h1>}
-                    <button
-                        onClick={toggleSidebar}
-                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                    {/* Only show close button on mobile */}
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="md:hidden"
+                        onClick={onMobileClose}
                     >
-                        {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-                    </button>
+                        <X className="h-5 w-5" />
+                    </Button>
                 </div>
 
                 <div className="space-y-4">
-                    <div className="px-3 py-2">
-                        <div className="flex items-center gap-4 px-4 py-2">
+                    <div className="py-2">
+                        <div className="flex items-center gap-4 py-2">
                             <Avatar className="h-12 w-12 border-2 border-gray-200 dark:border-white/20">
                                 <AvatarImage src={user?.avatar} />
                                 <AvatarFallback className="text-lg bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white">
@@ -156,41 +161,15 @@ export function Sidebar({ className, ...props }: SidebarProps) {
 
     return (
         <>
-            {/* Mobile menu button */}
-            <button
-                onClick={toggleMobileMenu}
-                className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-white dark:bg-[#0b0d16] text-gray-900 dark:text-white shadow-md"
-            >
-                {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
-
-            {/* Desktop sidebar */}
-            <div className="hidden lg:block">
-                {sidebarContent}
-            </div>
-
-            {/* Mobile sidebar */}
-            <AnimatePresence>
-                {isMobileMenuOpen && (
-                    <motion.div
-                        initial={{ x: -300 }}
-                        animate={{ x: 0 }}
-                        exit={{ x: -300 }}
-                        transition={{ duration: 0.3 }}
-                        className="lg:hidden fixed inset-y-0 left-0 z-40"
-                    >
-                        {sidebarContent}
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
-            {/* Mobile overlay */}
-            {isMobileMenuOpen && (
+            {/* Overlay for mobile only */}
+            {isMobileOpen && (
                 <div
-                    className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
-                    onClick={toggleMobileMenu}
+                    className="fixed inset-0 bg-black/50 z-40 md:hidden"
+                    onClick={onMobileClose}
                 />
             )}
+            {/* Sidebar: always render, but only visible on mobile if open, always visible on md+ */}
+            {sidebarContent}
         </>
     );
 }
