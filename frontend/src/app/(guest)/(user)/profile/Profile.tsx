@@ -2,13 +2,39 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AppContext } from "@/context/AppContext";
 import { User, Mail, Phone, MapPin, Calendar, Edit, Save, Upload, Camera } from "lucide-react";
+import { use, useContext, useEffect, useState } from "react";
 
 const Profile = () => {
+
+    const { user } = useContext(AppContext);
+
+    const [userUpdate, setUserUpdate] = useState({
+        name: '',
+        phone: 0,
+        age: 0,
+        gender: '',
+        address: '',
+    })
+    const [isLoanging, setIsLoading] = useState(false);
+
+    const [avatar, setAvatar] = useState<File | null>(null);
+
+    useEffect(() => {
+        if (user) {
+            setUserUpdate({
+                name: user.name,
+                phone: user.phone,
+                age: user.age,
+                address: user.address,
+                gender: user.gender,
+            });
+        }
+    }, [user]);
+
     return (
         <div className="container mx-auto px-4 py-8">
             <h1 className="text-2xl font-bold mb-8 text-white">Thông Tin Cá Nhân</h1>
@@ -19,7 +45,9 @@ const Profile = () => {
                     <div className="relative group">
                         <Avatar className="h-32 w-32 border-4 border-blue-100 dark:border-white/20 transition-transform group-hover:scale-105">
                             <AvatarImage src="/placeholder-avatar.jpg" />
-                            <AvatarFallback className="text-3xl bg-blue-50 dark:bg-[#232a41] text-blue-600 dark:text-white">JD</AvatarFallback>
+                            <AvatarFallback className="text-3xl bg-blue-50 dark:bg-[#232a41] text-blue-600 dark:text-white">
+                                {user?.name?.charAt(0).toUpperCase()}
+                            </AvatarFallback>
                         </Avatar>
                         <Button
                             size="icon"
@@ -30,16 +58,15 @@ const Profile = () => {
                         </Button>
                     </div>
                     <div className="text-center md:text-left space-y-2 w-full">
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">John Doe</h2>
-                        <p className="text-gray-600 dark:text-gray-300 text-lg">john.doe@example.com</p>
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-7">{user?.name}</h2>
                         <div className="flex items-center justify-center md:justify-start gap-4 pt-2">
                             <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
                                 <Phone className="h-4 w-4" />
-                                <span>+84 123 456 789</span>
+                                <span className='hover:underline'>{user?.phone !== 0 ? user?.phone : "chưa cập nhật"}</span>
                             </div>
                             <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
                                 <MapPin className="h-4 w-4" />
-                                <span>TP.HCM, Việt Nam</span>
+                                <span>{user?.address != null ? user?.address : "chưa cập nhật"}</span>
                             </div>
                         </div>
                     </div>
@@ -63,7 +90,8 @@ const Profile = () => {
                                 <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-blue-600 dark:text-blue-400" />
                                 <input
                                     id="name"
-                                    value="John Doe"
+                                    value={userUpdate?.name}
+                                    onChange={(e) => setUserUpdate({ ...userUpdate, name: e.target.value })}
                                     className="outline-none pl-9 w-full px-4 py-2 rounded-lg border-2 border-gray-400 dark:border-[#2a3145] focus:border-transparent focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/20 bg-white dark:bg-[#232a41] text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400"
                                 />
                             </div>
@@ -75,7 +103,7 @@ const Profile = () => {
                                 <input
                                     id="email"
                                     type="email"
-                                    value="john.doe@example.com"
+                                    value={user?.email}
                                     disabled
                                     className="outline-none pl-9 w-full px-4 py-2 rounded-lg border-2 border-gray-400 dark:border-[#2a3145] bg-gray-50 dark:bg-[#232a41] text-gray-500 dark:text-gray-400 focus:border-transparent"
                                 />
@@ -87,7 +115,9 @@ const Profile = () => {
                                 <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-blue-600 dark:text-blue-400" />
                                 <input
                                     id="phone"
-                                    value="+84 123 456 789"
+                                    type="number"
+                                    value={userUpdate?.phone}
+                                    onChange={(e) => setUserUpdate({ ...userUpdate, phone: Number(e.target.value) })}
                                     className="outline-none pl-9 w-full px-4 py-2 rounded-lg border-2 border-gray-400 dark:border-[#2a3145] focus:border-transparent focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/20 bg-white dark:bg-[#232a41] text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400"
                                 />
                             </div>
@@ -99,14 +129,20 @@ const Profile = () => {
                                 <input
                                     id="age"
                                     type="number"
-                                    value="25"
+                                    value={user?.age}
+                                    onChange={(e) => setUserUpdate({ ...userUpdate, age: Number(e.target.value) })}
                                     className="outline-none pl-9 w-full px-4 py-2 rounded-lg border-2 border-gray-400 dark:border-[#2a3145] focus:border-transparent focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/20 bg-white dark:bg-[#232a41] text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400"
                                 />
                             </div>
                         </div>
                         <div>
                             <Label htmlFor="gender" className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-200">Giới tính</Label>
-                            <Select defaultValue="MALE">
+                            <Select
+                                value={userUpdate.gender}
+                                onValueChange={(value) =>
+                                    setUserUpdate({ ...userUpdate, gender: value as GenderEnum })
+                                }
+                            >
                                 <SelectTrigger className="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-[#2a3145] focus:border-blue-500 dark:focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/20 bg-white dark:bg-[#232a41] text-gray-900 dark:text-gray-100">
                                     <SelectValue placeholder="Chọn giới tính" />
                                 </SelectTrigger>
@@ -116,6 +152,8 @@ const Profile = () => {
                                     <SelectItem value="OTHER">Khác</SelectItem>
                                 </SelectContent>
                             </Select>
+
+
                         </div>
                         <div className="md:col-span-2">
                             <Label htmlFor="address" className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-200">Địa chỉ</Label>
@@ -123,7 +161,8 @@ const Profile = () => {
                                 <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-blue-600 dark:text-blue-400" />
                                 <input
                                     id="address"
-                                    value="123 Đường ABC, Quận XYZ, TP.HCM"
+                                    value={userUpdate?.address == null ? "Chưa cập nhật" : userUpdate?.address}
+                                    onChange={(e) => setUserUpdate({ ...userUpdate, address: e.target.value })}
                                     className="outline-none pl-9 w-full px-4 py-2 rounded-lg border-2 border-gray-400 dark:border-[#2a3145] focus:border-transparent focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/20 bg-white dark:bg-[#232a41] text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400"
                                 />
                             </div>
@@ -138,6 +177,8 @@ const Profile = () => {
                             Hủy
                         </Button>
                         <Button
+                            type="submit"
+                            disabled={isLoanging}
                             className="px-8 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors gap-2"
                         >
                             <Save className="h-4 w-4" />

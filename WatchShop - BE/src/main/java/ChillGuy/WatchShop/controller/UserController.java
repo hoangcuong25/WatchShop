@@ -11,14 +11,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import ChillGuy.WatchShop.domain.User;
 import ChillGuy.WatchShop.domain.response.ResUserDTO;
 import ChillGuy.WatchShop.service.UserService;
-import ChillGuy.WatchShop.service.CloudinaryService;
 import ChillGuy.WatchShop.util.SecurityUtil;
 import ChillGuy.WatchShop.util.annotation.ApiMessage;
 import ChillGuy.WatchShop.util.error.ThrowBadReqException;
@@ -30,11 +28,9 @@ import jakarta.validation.Valid;
 public class UserController {
 
     private final UserService userService;
-    private final CloudinaryService cloudinaryService;
 
-    public UserController(UserService userService, CloudinaryService cloudinaryService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.cloudinaryService = cloudinaryService;
     }
 
     @PostMapping("/users")
