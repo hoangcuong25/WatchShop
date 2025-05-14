@@ -3,6 +3,7 @@ package ChillGuy.WatchShop.service;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import ChillGuy.WatchShop.domain.User;
 import ChillGuy.WatchShop.domain.response.ResCreateUserDTO;
@@ -15,8 +16,10 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final RedisService redisService;
+    private final CloudinaryService cloudinaryService;
 
-    public UserService(UserRepository userRepository, RedisService redisService) {
+    public UserService(UserRepository userRepository, RedisService redisService, CloudinaryService cloudinaryService) {
+        this.cloudinaryService = cloudinaryService;
         this.userRepository = userRepository;
         this.redisService = redisService;
     }
@@ -45,7 +48,8 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public User handleUpdateUser(User userUpdateData, User isUser) {
+    public User handleUpdateUser(User userUpdateData, MultipartFile file, User isUser)
+            throws Exception {
         if (userUpdateData == null) {
             return null;
         }
@@ -67,7 +71,12 @@ public class UserService {
             isUser.setPhone(phone);
         }
         if (userUpdateData.getAvatar() != null) {
-            isUser.setAvatar(userUpdateData.getAvatar());
+
+            // Upload image to Cloudinary
+            String imageUrl = cloudinaryService.uploadFile(file);
+
+            // Set the image URL to the user
+            isUser.setAvatar(imageUrl);
         }
 
         return userRepository.save(isUser);

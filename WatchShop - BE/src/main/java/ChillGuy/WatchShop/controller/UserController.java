@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import ChillGuy.WatchShop.domain.User;
@@ -86,8 +87,10 @@ public class UserController {
 
     @PutMapping("/users")
     @ApiMessage("Cập nhật thông tin người dùng")
-    public ResponseEntity<ResUserDTO> updateUser(@RequestBody User userUpdateData)
-            throws ThrowBadReqException {
+    public ResponseEntity<ResUserDTO> updateUser(
+            @RequestPart("user") User userUpdateData,
+            @RequestPart("image") MultipartFile file) throws ThrowBadReqException, Exception {
+
         String email = SecurityUtil.getCurrentUserLogin()
                 .orElseThrow(() -> new ThrowBadReqException("Không tìm thấy người dùng"));
 
@@ -96,52 +99,12 @@ public class UserController {
             throw new ThrowBadReqException("Không tìm thấy người dùng");
         }
 
-        // Prevent role update unless user is admin
-        if (userUpdateData.getRole() != null && userUpdateData.getRole() != currentUser.getRole()) {
-            if (currentUser.getRole() != RoleEnum.ADMIN) {
-                throw new ThrowBadReqException("Không có quyền thay đổi role");
-            }
-        }
-
-        User updatedUser = this.userService.handleUpdateUser(userUpdateData, currentUser);
+        User updatedUser = this.userService.handleUpdateUser(userUpdateData, file, currentUser);
 
         if (updatedUser == null) {
             throw new ThrowBadReqException("Đã xảy ra lỗi");
         }
 
         return ResponseEntity.ok(userService.convertToResUserDTO(updatedUser));
-    }
-
-    @PutMapping("/users/avatar")
-    @ApiMessage("Cập nhật avatar người dùng")
-    public ResponseEntity<ResUserDTO> updateAvatar(@RequestParam("file") MultipartFile file)
-            throws ThrowBadReqException {
-        String email = SecurityUtil.getCurrentUserLogin()
-                .orElseThrow(() -> new ThrowBadReqException("Không tìm thấy người dùng"));
-
-        User currentUser = userService.getUserByEmail(email);
-        if (currentUser == null) {
-            throw new ThrowBadReqException("Không tìm thấy người dùng");
-        }
-
-        try {
-            // Upload file to Cloudinary
-            String imageUrl = cloudinaryService.uploadFile(file);
-
-            // Create update data with new avatar URL
-            User updateData = new User();
-            updateData.setAvatar(imageUrl);
-
-            // Update user with new avatar
-            User updatedUser = userService.handleUpdateUser(updateData, currentUser);
-
-            if (updatedUser == null) {
-                throw new ThrowBadReqException("Đã xảy ra lỗi khi cập nhật avatar");
-            }
-
-            return ResponseEntity.ok(userService.convertToResUserDTO(updatedUser));
-        } catch (Exception e) {
-            throw new ThrowBadReqException("Upload avatar thất bại: " + e.getMessage());
-        }
     }
 }
