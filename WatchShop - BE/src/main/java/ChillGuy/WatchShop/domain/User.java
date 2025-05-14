@@ -51,7 +51,7 @@ public class User {
 
     private String avatar;
 
-    private int phone;
+    private String phone;
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "varchar(20) default 'USER'")

@@ -12,9 +12,6 @@ import {
     Package,
     HelpCircle,
     LogOut,
-    ChevronLeft,
-    ChevronRight,
-    Menu,
     X,
 } from "lucide-react";
 import Link from "next/link";
@@ -79,7 +76,7 @@ export function Sidebar({ className, isMobileOpen, onMobileClose, ...props }: Si
     const sidebarContent = (
         <div
             className={cn(
-                "h-screen bg-white dark:bg-[#0b0d16] text-gray-800 dark:text-white border-r border-gray-200 dark:border-white/10 transition-all duration-300 flex flex-col w-64 md:relative md:translate-x-0 md:z-0",
+                "h-screen bg-gray-200 shadow-2xs dark:bg-[#0b0d16] text-gray-800 dark:text-white border-r border-gray-200 dark:border-white/10 transition-all duration-300 flex flex-col w-64 md:relative md:translate-x-0 md:z-0",
                 // Mobile: slide in/out
                 isMobileOpen ? "fixed inset-y-0 left-0 z-50 translate-x-0" : "-translate-x-full fixed inset-y-0 left-0 z-50 md:translate-x-0 md:relative md:block",
                 "md:block", // always block on md+

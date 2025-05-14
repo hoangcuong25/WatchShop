@@ -20,7 +20,7 @@ declare global {
         gender: GenderEnum;
         address: string;
         avatar: string;
-        phone: number;
+        phone: string;
         role: RoleEnum;
         createdAt?: string;
         updatedAt?: string;

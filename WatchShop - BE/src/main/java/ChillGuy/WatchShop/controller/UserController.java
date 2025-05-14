@@ -85,7 +85,7 @@ public class UserController {
     @ApiMessage("Cập nhật thông tin người dùng")
     public ResponseEntity<ResUserDTO> updateUser(
             @RequestPart("user") User userUpdateData,
-            @RequestPart("image") MultipartFile file) throws ThrowBadReqException, Exception {
+            @RequestPart(value = "avata", required = false) MultipartFile file) throws ThrowBadReqException, Exception {
 
         String email = SecurityUtil.getCurrentUserLogin()
                 .orElseThrow(() -> new ThrowBadReqException("Không tìm thấy người dùng"));

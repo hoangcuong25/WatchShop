@@ -10,6 +10,7 @@ import ChillGuy.WatchShop.domain.response.ResCreateUserDTO;
 import ChillGuy.WatchShop.domain.response.ResLoginDTO;
 import ChillGuy.WatchShop.domain.response.ResUserDTO;
 import ChillGuy.WatchShop.repository.UserRepository;
+import ChillGuy.WatchShop.util.error.ThrowBadReqException;
 
 @Service
 public class UserService {
@@ -66,16 +67,16 @@ public class UserService {
         if (userUpdateData.getName() != null) {
             isUser.setName(userUpdateData.getName());
         }
-        int phone = userUpdateData.getPhone();
-        if (phone > 0 && String.valueOf(phone).length() == 10) {
-            isUser.setPhone(phone);
+
+        String phoneStr = String.valueOf(userUpdateData.getPhone());
+        if (phoneStr.length() == 10) {
+            isUser.setPhone(phoneStr);
+        } else {
+            throw new ThrowBadReqException("Số điện thoại không hợp lệ");
         }
-        if (userUpdateData.getAvatar() != null) {
 
-            // Upload image to Cloudinary
+        if (file != null && !file.isEmpty()) {
             String imageUrl = cloudinaryService.uploadFile(file);
-
-            // Set the image URL to the user
             isUser.setAvatar(imageUrl);
         }
 
