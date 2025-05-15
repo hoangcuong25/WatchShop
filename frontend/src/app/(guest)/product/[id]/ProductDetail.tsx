@@ -4,14 +4,15 @@ import Image from "next/image";
 import { FaRegHeart, FaShoppingCart, FaStar, FaSearchPlus } from "react-icons/fa";
 import { useParams, useRouter } from "next/navigation";
 import { getProductByIdApi } from "@/api/Product.api";
-import { useContext, useEffect, useState } from "react";
+import { use, useContext, useEffect, useState } from "react";
 import { convertHtmlToPlainText } from "@/components/Editor";
 import { AppContext } from "@/context/AppContext";
 import { Button } from "@/components/ui/button";
 
 export default function ProductDetail() {
 
-    const { products } = useContext(AppContext);
+    const { products, setOrderInfor } = useContext(AppContext);
+
     const router = useRouter();
 
     const { formatCompactDescription } = useContext(AppContext);
@@ -37,6 +38,16 @@ export default function ProductDetail() {
             setIsLoading(false);
         }
     }
+
+    useEffect(() => {
+        if (product) {
+            const orderInfo = {
+                product: product,
+                quantity: quantity,
+            };
+            setOrderInfor([orderInfo]);
+        }
+    }, [product, quantity]);
 
     useEffect(() => {
         handleGetProductById();
@@ -145,7 +156,7 @@ export default function ProductDetail() {
                                 Thêm vào giỏ
                             </button>
                             <button
-                                onClick={() => router.push(`/payment?productId=${product?.id}&quantity=${quantity}`)}
+                                onClick={() => router.push(`/payment`)}
                                 className="flex-1 bg-red-600 text-white py-3 px-6 rounded-lg hover:bg-red-700 transition-colors"
                             >
                                 🛒 Mua ngay

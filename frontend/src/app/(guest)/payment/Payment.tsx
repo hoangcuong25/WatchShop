@@ -1,56 +1,36 @@
 'use client'
 
-import { getProductByIdApi } from "@/api/Product.api";
-import { useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { AppContext } from "@/context/AppContext";
+import Image from "next/image";
+import React, { useContext, useState } from "react";
 
 export default function Payment() {
-    const searchParams = useSearchParams();
-    const productId = searchParams.get("productId");
-    const quantity = Number(searchParams.get("quantity") || 1);
+    const { orderInfor } = useContext(AppContext);
 
     const [paymentMethod, setPaymentMethod] = useState("cod");
     const [address, setAddress] = useState("");
     const [discountCode, setDiscountCode] = useState("");
-    const [product, setProduct] = useState<ProductType | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-
-    const handleGetProductById = async () => {
-        try {
-            setIsLoading(true);
-            const response = await getProductByIdApi(productId as string);
-            setProduct(response.data);
-        } catch (error) {
-            console.error("Lỗi khi lấy sản phẩm:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        handleGetProductById();
-    }, [productId]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         alert("Thanh toán thành công!");
     };
 
-    const productPrice = product ? Number(product.newPrice) * quantity : 0;
+    const productPrice = () => {
+        let total = 0;
+
+        orderInfor.forEach((prod: any) => {
+            const rawPrice = prod.product.newPrice.replace(/\./g, "")
+            const price = parseInt(rawPrice, 10);
+            total += price * prod.quantity;
+        });
+
+        return total;
+    };
 
     let discountAmount = 0;
-    if (discountCode.toUpperCase() === "GIAM10") {
-        discountAmount = productPrice * 0.1;
-    } else if (discountCode.toUpperCase() === "GIAM20") {
-        discountAmount = productPrice * 0.2;
-    }
-
-    let shippingFee = 30000;
-    if (discountCode.toUpperCase() === "FREESHIP") {
-        shippingFee = 0;
-    }
-
-    const totalPayable = productPrice - discountAmount + shippingFee;
+    let totalPayable = productPrice() - discountAmount + 30000;
 
     if (isLoading) {
         return (
@@ -61,40 +41,46 @@ export default function Payment() {
     }
 
     return (
-        <div className="max-w-5xl mx-auto bg-white shadow-md rounded-lg p-6 mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="max-w-5xl mx-auto bg-white shadow-md rounded-lg p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Chi tiết sản phẩm */}
             <div className="space-y-4">
                 <h2 className="text-xl font-semibold">Thông tin sản phẩm</h2>
-                {product && (
-                    <div className="flex flex-col sm:flex-row gap-4 items-start">
-                        <div className="min-w-[200px] max-w-[200px] h-[200px] rounded-md overflow-hidden border">
-                            <img
-                                src={product.imageUrls[0]}
-                                alt={product.name}
-                                className="w-full h-full object-cover"
-                            />
+                {orderInfor && orderInfor.map((prod, index) => (
+                    prod && (
+                        <div key={index} className="flex flex-col sm:flex-row gap-4 items-start">
+                            <div className="min-w-[200px] max-w-[200px] h-[200px] rounded-md overflow-hidden border">
+                                {prod.product.imageUrls && prod.product.imageUrls.length > 0 &&
+                                    <Image
+                                        src={prod.product.imageUrls[0]}
+                                        alt={prod.product.name}
+                                        width={200}
+                                        height={200}
+                                        className="w-full h-full object-cover"
+                                    />
+                                }
+                            </div>
+                            <div className="flex-1 space-y-1">
+                                <h3 className="text-lg font-bold">{prod.product.name}</h3>
+                                <p className="text-gray-600">Giá: <strong>{prod.product.newPrice}₫</strong></p>
+                                {/* <p className="text-gray-600">Số lượng: <strong>{quantity}</strong></p> */}
+                            </div>
                         </div>
-                        <div className="flex-1 space-y-1">
-                            <h3 className="text-lg font-bold">{product.name}</h3>
-                            <p className="text-gray-600">Giá: <strong>{product.newPrice}₫</strong></p>
-                            <p className="text-gray-600">Số lượng: <strong>{quantity}</strong></p>
-                        </div>
-                    </div>
-                )}
+                    )
+                ))}
 
-                {/* Chi tiết thanh toán (bill) */}
+                {/* Chi tiết thanh toán */}
                 <div className="mt-4 border-t pt-4 space-y-2 text-sm text-gray-700">
                     <div className="flex justify-between">
                         <span>Tạm tính</span>
-                        <span>{productPrice.toLocaleString()}₫</span>
+                        <span>{productPrice().toLocaleString()} VNĐ</span>
                     </div>
                     <div className="flex justify-between">
                         <span>Giảm giá</span>
-                        <span>-{discountAmount.toLocaleString()}₫</span>
+                        <span>- {discountAmount.toLocaleString()} VNĐ</span>
                     </div>
                     <div className="flex justify-between">
                         <span>Phí giao hàng</span>
-                        <span>{shippingFee.toLocaleString()}₫</span>
+                        <span>30.000 VNĐ</span>
                     </div>
                     <div className="border-t pt-3 flex justify-between font-bold text-base text-blue-700">
                         <span>Tổng thanh toán</span>

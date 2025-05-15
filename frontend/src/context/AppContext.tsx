@@ -40,6 +40,8 @@ interface AppContextType {
     isLoading: boolean;
     fetchProducts: (page: number) => Promise<void>;
     formatCompactDescription: (text: string) => string;
+    orderInfor: any[];
+    setOrderInfor: (orderInfor: any[]) => void;
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -61,6 +63,8 @@ export const AppContext = createContext<AppContextType>({
     isLoading: false,
     fetchProducts: async () => { },
     formatCompactDescription: () => '',
+    orderInfor: [],
+    setOrderInfor: () => { }
 });
 
 interface AppContextProviderProps {
@@ -76,6 +80,8 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({ children }) => 
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
+
+    const [orderInfor, setOrderInfor] = useState<any[]>([]);
 
     const formatDate = (dateString: string) => {
         if (!dateString) return '';
@@ -134,7 +140,8 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({ children }) => 
         currentPage, setCurrentPage,
         totalPages, setTotalPages, isLoading,
         fetchProducts,
-        formatCompactDescription
+        formatCompactDescription,
+        orderInfor, setOrderInfor
     };
 
     const fetchUser = async () => {
