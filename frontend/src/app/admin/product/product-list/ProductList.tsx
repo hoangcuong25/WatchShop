@@ -6,6 +6,20 @@ import Image from 'next/image';
 import { useContext, useState } from 'react';
 import { AppContext } from '@/context/AppContext';
 import FilterButton from '@/components/FilterButton';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { toast } from 'sonner';
+import { deleteProductApi } from '@/api/Product.api';
+
 
 export default function ProductList() {
     const router = useRouter();
@@ -21,6 +35,19 @@ export default function ProductList() {
     const handlePageChange = (newPage: number) => {
         if (newPage >= 0 && newPage < totalPages) {
             fetchProducts(newPage);
+        }
+    };
+
+    const handleDeleteProduct = async (productId: string) => {
+        try {
+            // Call the delete product API
+            await deleteProductApi(productId);
+
+            await fetchProducts(currentPage);
+
+            toast.success('Xóa sản phẩm thành công');
+        } catch (error) {
+            toast.error('Xóa sản phẩm thất bại');
         }
     };
 
@@ -66,10 +93,12 @@ export default function ProductList() {
                         <div
                             key={product.id}
                             className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow"
-                            onClick={() => router.push(`/product/${product.id}`)}
                         >
                             {/* Product Image */}
-                            <div className="relative aspect-square w-full">
+                            <div
+                                onClick={() => router.push(`/product/${product.id}`)}
+                                className="relative aspect-square w-full"
+                            >
                                 <Image
                                     src={product.imageUrls[0]}
                                     alt={product.name}
@@ -113,11 +142,27 @@ export default function ProductList() {
                                     >
                                         <FaEdit className="w-5 h-5" />
                                     </button>
-                                    <button
-                                        className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                                    >
-                                        <FaTrash className="w-5 h-5" />
-                                    </button>
+                                    <AlertDialog>
+                                        <AlertDialogTrigger>
+                                            <button
+                                                className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                                            >
+                                                <FaTrash className="w-5 h-5" />
+                                            </button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>Bạn có chắc muốn xóa sản phẩm này?</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    Hành động này không thể hoàn tác. Sản phẩm sẽ bị xóa vĩnh viễn khỏi hệ thống.
+                                                </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel>Hủy</AlertDialogCancel>
+                                                <AlertDialogAction onClick={() => handleDeleteProduct(product.id.toString())} className='bg-red-500 hover:bg-red-600'>Xóa</AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
                                 </div>
                             </div>
                         </div>

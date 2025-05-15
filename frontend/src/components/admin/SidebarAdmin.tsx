@@ -105,7 +105,7 @@ export default function SidebarAdmin() {
     };
 
     const sidebarContent = (
-        <div className={`h-screen bg-white dark:bg-[#0b0d16] text-gray-800 dark:text-white border-r border-gray-200 dark:border-gray-800 overflow-y-auto transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-64'
+        <div className={`h-screen bg-gray-200 shadow-2xl dark:bg-[#0b0d16] text-gray-800 dark:text-white border-r border-gray-200 dark:border-gray-800 overflow-y-auto transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-64'
             }`}>
             <div className="p-4">
                 <div className="flex items-center justify-between mb-8">

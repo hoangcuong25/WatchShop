@@ -89,3 +89,12 @@ export const getProductByIdApi = async (id: string) => {
         throw error;
     }
 }
+
+export const deleteProductApi = async (id: string) => {
+    try {
+        const response = await axiosClient.delete(`/api/v1/products/${id}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}

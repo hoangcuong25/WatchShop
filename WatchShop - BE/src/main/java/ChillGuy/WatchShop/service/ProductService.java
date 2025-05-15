@@ -104,4 +104,10 @@ public class ProductService {
         return productRepository.findById(id)
                 .orElseThrow(() -> new ThrowBadReqException("Không tìm thấy sản phẩm"));
     }
+
+    public void deleteProduct(Long id) throws ThrowBadReqException {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ThrowBadReqException("Không tìm thấy sản phẩm"));
+        productRepository.delete(product);
+    }
 }
