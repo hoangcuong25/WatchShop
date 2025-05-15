@@ -103,6 +103,9 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = jakarta.persistence.CascadeType.ALL)
     private List<Image> images = new ArrayList<>();
 
+    @OneToMany(mappedBy = "product")
+    private List<OrderItem> orderItems;
+
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;
