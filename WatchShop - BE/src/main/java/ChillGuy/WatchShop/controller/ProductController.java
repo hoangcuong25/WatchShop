@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -86,4 +87,18 @@ public class ProductController {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }
+
+    // @PutMapping("/products/{id}")
+    // @PreAuthorize("hasRole('ADMIN')")
+    // @ApiMessage("Cập nhật sản phẩm theo id")
+    // public ResponseEntity<Product> updateProduct(
+    //         @RequestPart("product") @Valid ProductRequestDTO productRequest,
+    //         @RequestPart(value = "images", required = false) MultipartFile[] imageFiles) throws ThrowBadReqException {
+    //     try {
+    //         Product product = productService.updateProduct(id, productRequest, imageFiles);
+    //         return ResponseEntity.ok(product);
+    //     } catch (Exception e) {
+    //         throw new ThrowBadReqException(e.getMessage());
+    //     }
+    // }
 }

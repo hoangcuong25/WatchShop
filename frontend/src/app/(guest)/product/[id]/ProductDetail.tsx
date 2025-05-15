@@ -2,13 +2,17 @@
 
 import Image from "next/image";
 import { FaRegHeart, FaShoppingCart, FaStar, FaSearchPlus } from "react-icons/fa";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { getProductByIdApi } from "@/api/Product.api";
 import { useContext, useEffect, useState } from "react";
 import { convertHtmlToPlainText } from "@/components/Editor";
 import { AppContext } from "@/context/AppContext";
+import { Button } from "@/components/ui/button";
 
 export default function ProductDetail() {
+
+    const { products } = useContext(AppContext);
+    const router = useRouter();
 
     const { formatCompactDescription } = useContext(AppContext);
 
@@ -61,8 +65,7 @@ export default function ProductDetail() {
                             src={product?.imageUrls[selectedImage] || ''}
                             alt="Watch"
                             fill
-                            className={`object-cover transition-transform duration-300 ${isZoomed ? 'scale-150' : 'scale-100'
-                                }`}
+                            className={`object-cover transition-transform duration-500 ease-in-out ${isZoomed ? 'scale-150' : 'scale-100'}`}
                         />
                         <div className="absolute bottom-4 right-4 bg-white/80 dark:bg-gray-800/80 p-2 rounded-full">
                             <FaSearchPlus className="w-5 h-5" />
@@ -141,9 +144,27 @@ export default function ProductDetail() {
                                 <FaShoppingCart className="inline-block mr-2" />
                                 Thêm vào giỏ
                             </button>
+                            <button className="flex-1 bg-red-600 text-white py-3 px-6 rounded-lg hover:bg-red-700 transition-colors">
+                                🛒 Mua ngay
+                            </button>
                             <button className="p-3 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                                 <FaRegHeart className="w-6 h-6" />
                             </button>
+                        </div>
+
+                        <div className="bg-gray-50 dark:bg-gray-900 border rounded-lg p-4 space-y-2">
+                            <p className="text-green-600 font-medium">✔ Miễn phí giao hàng toàn quốc</p>
+                            <p className="text-blue-600 font-medium">✔ Đổi trả trong 7 ngày nếu lỗi do NSX</p>
+                            <div className="flex flex-wrap gap-4 mt-8">
+                                <div className="flex items-center space-x-2">
+                                    <span className="text-green-600 text-xl">🛡️</span>
+                                    <p>Bảo hành 12 tháng</p>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <span className="text-blue-600 text-xl">💬</span>
+                                    <p>Hỗ trợ trực tuyến 24/7</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -222,6 +243,33 @@ export default function ProductDetail() {
                     </div>
                 </div>
             )}
+
+            <div className="mt-12 border-y border-gray-300 dark:border-gray-700 py-8">
+                <div className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6 text-center">Có thể bạn sẽ quan tâm</div>
+                <div className="w-full flex justify-center">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 px-1.5">
+                        {products.slice(7, 12).map((prod, idx) => (
+                            <div key={idx} className="bg-gray-100 shadow-2xl dark:bg-[#181c2a] rounded-lg p-4 flex flex-col items-center relative">
+
+                                <div className="absolute left-2 top-2 bg-red-600 text-white text-xs font-bold rounded-full px-3 py-1 z-10">-{prod.discount}%</div>
+
+                                <Image onClick={() => router.push(`/product/${prod.id}`)} src={prod.imageUrls[0]} alt={prod.name} width={100} height={100} className="w-64 h-64 object-contain mb-2" />
+
+                                <div className="text-center mt-2">
+                                    <div className="font-semibold">{prod.name}</div>
+                                    <div className=' my-1.5'>Thương hiệu: {prod.brandName}</div>
+                                    <div className=' my-1.5'>Xuất xứ: {prod.brandOrigin}</div>
+                                    <div className="text-gray-500 my-2 line-through">Giá: {prod.oldPrice} VNĐ</div>
+                                    <div className='text-red-500 font-semibold'> Giá: {prod.newPrice} VNĐ</div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-6 text-center mt-16">
+                    <Button className='h-10'>Xem thêm sản phẩm</Button>
+                </div>
+            </div>
         </div>
     );
 }

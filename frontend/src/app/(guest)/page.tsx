@@ -16,6 +16,10 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 import { FaMale, FaFemale, FaHeart, FaClock, FaTools } from "react-icons/fa";
+import { AppContext } from "@/context/AppContext";
+import { useContext } from "react";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 const categories = [
   { icon: <FaMale className="text-3xl text-blue-500 dark:text-blue-400" />, label: "Đồng hồ nam" },
@@ -49,65 +53,12 @@ const brandImages = [
   { src: Brand5, alt: "Brand 5" },
 ];
 
-const bestSellers = [
-  {
-    name: "Đồng hồ nam Longines Master",
-    code: "L2.909.4.77.6",
-    type: "AUTOMATIC",
-    size: "40MM",
-    oldPrice: "94.050.000₫",
-    price: "84.645.000₫",
-    discount: 10,
-    img: Brand1,
-    buy1get1: true,
-  },
-  {
-    name: "Đồng hồ nam Tissot Chemin Des Tourelles",
-    code: "T139.807.22.038.00",
-    type: "AUTOMATIC",
-    size: "39MM",
-    oldPrice: "26.950.000₫",
-    price: "24.255.000₫",
-    discount: 10,
-    img: Brand1,
-    buy1get1: false,
-  },
-  {
-    name: "Đồng hồ nam Tissot PRX",
-    code: "T137.407.11.351.00",
-    type: "AUTOMATIC",
-    size: "40MM",
-    oldPrice: "23.000.000₫",
-    price: "20.700.000₫",
-    discount: 10,
-    img: Brand1,
-    buy1get1: false,
-  },
-  {
-    name: "Đồng hồ nam Longines Master",
-    code: "L2.793.5.97.7",
-    type: "AUTOMATIC",
-    size: "40MM",
-    oldPrice: "133.650.000₫",
-    price: "120.285.000₫",
-    discount: 10,
-    img: Brand1,
-    buy1get1: true,
-  },
-  {
-    name: "Đồng hồ nam Longines Hydroconquest",
-    code: "L3.781.3.08.7",
-    type: "AUTOMATIC",
-    size: "41MM",
-    oldPrice: "62.700.000₫",
-    price: "56.430.000₫",
-    discount: 10,
-    img: Brand1,
-    buy1get1: false,
-  },
-];
-
 export default function Home() {
+
+  const { products } = useContext(AppContext)
+
+  const router = useRouter();
+
   return (
     <div className="bg-[#f7f7fa] dark:bg-[#10121a] min-h-screen transition-colors duration-300">
       {/* Banner */}
@@ -135,7 +86,7 @@ export default function Home() {
 
       {/* Sliding Brand Section */}
       <div className="max-w-5xl mx-auto mt-10">
-        <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 text-center">Thương hiệu nổi bật</h2>
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6 text-center">Thương hiệu nổi bật</h2>
         <Swiper
           modules={[Autoplay]}
           slidesPerView={2}
@@ -159,52 +110,114 @@ export default function Home() {
         </Swiper>
       </div>
 
-      <div className="mt-12">
+      <div className="mt-12 border-b border-gray-300 dark:border-gray-700 pb-8">
         <div className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6 text-center">Sản phẩm bán chạy</div>
-        {/* Danh mục nổi bật */}
-        <div className="flex justify-center mt-8">
-          <div className="grid grid-cols-3 sm:gap-1.5 gap-4 px-1.5">
-            {categories.map((cat) => (
-              <div
-                key={cat.label}
-                className="flex flex-col items-center bg-white dark:bg-[#181c2a] rounded-lg shadow p-4 hover:shadow-lg transition cursor-pointer"
-              >
-                {cat.icon}
-                <span className="mt-2 font-semibold text-gray-700 dark:text-gray-200 text-center text-sm">{cat.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-8">
         <div className="w-full flex justify-center">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 px-1.5">
-            {bestSellers.map((prod, idx) => (
-              <div key={idx} className="bg-white dark:bg-[#181c2a] rounded-lg shadow p-4 flex flex-col items-center relative">
-                {/* Discount badge */}
+            {products.slice(0, 5).map((prod, idx) => (
+              <div key={idx} className="bg-gray-100 shadow-2xl dark:bg-[#181c2a] rounded-lg p-4 flex flex-col items-center relative">
+
                 <div className="absolute left-2 top-2 bg-red-600 text-white text-xs font-bold rounded-full px-3 py-1 z-10">-{prod.discount}%</div>
-                {/* Buy 1 get 1 badge */}
-                {prod.buy1get1 && (
-                  <div className="absolute left-2 bottom-2 bg-orange-600 text-white text-xs font-bold rounded px-2 py-1 z-10">Mua 1 tặng 1</div>
-                )}
-                {/* Product image */}
-                <Image src={prod.img} alt={prod.name} className="w-32 h-32 object-contain mb-2" />
-                {/* Product info */}
+
+                <Image onClick={() => router.push(`/product/${prod.id}`)} src={prod.imageUrls[0]} alt={prod.name} width={100} height={100} className="w-64 h-64 object-contain mb-2" />
+
                 <div className="text-center mt-2">
                   <div className="font-semibold">{prod.name}</div>
-                  <div className="font-bold text-lg">{prod.code}</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">{prod.type} | {prod.size}</div>
-                  <div className="line-through text-gray-400 text-sm mt-1">{prod.oldPrice}</div>
-                  <div className="text-red-600 font-bold text-lg mt-1">Giá KM: {prod.price}</div>
+                  <div className=' my-1.5'>Thương hiệu: {prod.brandName}</div>
+                  <div className=' my-1.5'>Xuất xứ: {prod.brandOrigin}</div>
+                  <div className="text-gray-500 my-2 line-through">Giá: {prod.oldPrice} VNĐ</div>
+                  <div className='text-red-500 font-semibold'> Giá: {prod.newPrice} VNĐ</div>
                 </div>
               </div>
             ))}
           </div>
         </div>
+        <div className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-6 text-center mt-16">
+          <Button className='h-10'>Xem thêm sản phẩm bán chạy</Button>
+        </div>
       </div>
 
-      {/* Giới thiệu ngắn */}
+      <div className="mt-12 border-b border-gray-300 dark:border-gray-700 pb-8">
+        <div className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6 text-center">Sản phẩm mới</div>
+        <div className="w-full flex justify-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 px-1.5">
+            {products.slice(5, 10).map((prod, idx) => (
+              <div key={idx} className="bg-gray-100 shadow-2xl dark:bg-[#181c2a] rounded-lg p-4 flex flex-col items-center relative">
+
+                <div className="absolute left-2 top-2 bg-red-600 text-white text-xs font-bold rounded-full px-3 py-1 z-10">-{prod.discount}%</div>
+
+                <Image onClick={() => router.push(`/product/${prod.id}`)} src={prod.imageUrls[0]} alt={prod.name} width={100} height={100} className="w-64 h-64 object-contain mb-2" />
+
+                <div className="text-center mt-2">
+                  <div className="font-semibold">{prod.name}</div>
+                  <div className=' my-1.5'>Thương hiệu: {prod.brandName}</div>
+                  <div className=' my-1.5'>Xuất xứ: {prod.brandOrigin}</div>
+                  <div className="text-gray-500 my-2 line-through">Giá: {prod.oldPrice} VNĐ</div>
+                  <div className='text-red-500 font-semibold'> Giá: {prod.newPrice} VNĐ</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-6 text-center mt-16">
+          <Button className='h-10'>Xem thêm sản phẩm bán chạy</Button>
+        </div>
+      </div>
+
+      <div className="mt-12 border-b border-gray-300 dark:border-gray-700 pb-8">
+        <div className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6 text-center">Có thể bạn sẽ quan tâm</div>
+        <div className="w-full flex justify-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 px-1.5">
+            {products.slice(7, 12).map((prod, idx) => (
+              <div key={idx} className="bg-gray-100 shadow-2xl dark:bg-[#181c2a] rounded-lg p-4 flex flex-col items-center relative">
+
+                <div className="absolute left-2 top-2 bg-red-600 text-white text-xs font-bold rounded-full px-3 py-1 z-10">-{prod.discount}%</div>
+
+                <Image onClick={() => router.push(`/product/${prod.id}`)} src={prod.imageUrls[0]} alt={prod.name} width={100} height={100} className="w-64 h-64 object-contain mb-2" />
+
+                <div className="text-center mt-2">
+                  <div className="font-semibold">{prod.name}</div>
+                  <div className=' my-1.5'>Thương hiệu: {prod.brandName}</div>
+                  <div className=' my-1.5'>Xuất xứ: {prod.brandOrigin}</div>
+                  <div className="text-gray-500 my-2 line-through">Giá: {prod.oldPrice} VNĐ</div>
+                  <div className='text-red-500 font-semibold'> Giá: {prod.newPrice} VNĐ</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-6 text-center mt-16">
+          <Button className='h-10'>Xem thêm sản phẩm</Button>
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto py-16 px-4">
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-10 text-center">Tại sao nên chọn WatchShop?</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="text-center">
+            <FaClock className="text-4xl text-blue-500 mx-auto mb-4" />
+            <h3 className="font-semibold text-gray-800 dark:text-gray-100">Giao hàng nhanh</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">Giao hàng trong 24h cho nội thành và 2-3 ngày toàn quốc.</p>
+          </div>
+          <div className="text-center">
+            <FaTools className="text-4xl text-green-500 mx-auto mb-4" />
+            <h3 className="font-semibold text-gray-800 dark:text-gray-100">Bảo hành chính hãng</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">Cam kết bảo hành chính hãng từ 1 đến 5 năm.</p>
+          </div>
+          <div className="text-center">
+            <FaHeart className="text-4xl text-red-500 mx-auto mb-4" />
+            <h3 className="font-semibold text-gray-800 dark:text-gray-100">Chăm sóc khách hàng tận tâm</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">Hỗ trợ đổi trả và tư vấn tận tình 24/7.</p>
+          </div>
+          <div className="text-center">
+            <FaMale className="text-4xl text-yellow-500 mx-auto mb-4" />
+            <h3 className="font-semibold text-gray-800 dark:text-gray-100">Mẫu mã đa dạng</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">Cập nhật liên tục các xu hướng đồng hồ mới nhất.</p>
+          </div>
+        </div>
+      </div>
+
+
       <div className="max-w-3xl mx-auto mt-16 pb-8 text-center">
         <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">Chào mừng đến với WatchShop</h2>
         <p className="text-gray-600 dark:text-gray-300">

@@ -137,7 +137,7 @@ export default function ProductList() {
                                 {/* Action Buttons */}
                                 <div className="flex justify-end gap-2">
                                     <button
-                                        onClick={() => router.push(`/admin/product/edit/${product.id}`)}
+                                        onClick={() => router.push(`/admin/product/edit-product/${product.id}`)}
                                         className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
                                     >
                                         <FaEdit className="w-5 h-5" />
