@@ -144,7 +144,10 @@ export default function ProductDetail() {
                                 <FaShoppingCart className="inline-block mr-2" />
                                 Thêm vào giỏ
                             </button>
-                            <button className="flex-1 bg-red-600 text-white py-3 px-6 rounded-lg hover:bg-red-700 transition-colors">
+                            <button
+                                onClick={() => router.push(`/payment?productId=${product?.id}&quantity=${quantity}`)}
+                                className="flex-1 bg-red-600 text-white py-3 px-6 rounded-lg hover:bg-red-700 transition-colors"
+                            >
                                 🛒 Mua ngay
                             </button>
                             <button className="p-3 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
