@@ -21,7 +21,7 @@ public class OrderRequestDTO {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public class OrderItemRequest {
+    public static class OrderItemRequest {
         private Long productId;
         private int quantity;
         private double price;

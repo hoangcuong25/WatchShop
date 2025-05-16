@@ -1,11 +1,13 @@
 'use client'
 
+import { createOrderApi } from "@/api/order.api";
 import { AppContext } from "@/context/AppContext";
 import Image from "next/image";
 import React, { useContext, useState } from "react";
+import { toast } from "sonner";
 
 export default function Payment() {
-    const { orderInfor } = useContext(AppContext);
+    const { orderInfor, user } = useContext(AppContext);
 
     const [paymentMethod, setPaymentMethod] = useState("cod");
     const [address, setAddress] = useState("");
@@ -31,6 +33,39 @@ export default function Payment() {
 
     let discountAmount = 0;
     let totalPayable = productPrice() - discountAmount + 30000;
+
+    const handleOrder = async () => {
+        setIsLoading(true);
+
+        try {
+            const orderData = {
+                userId: user?.id,
+                shippingAddress: address,
+                paymentMethod,
+                totalPayable,
+                items: orderInfor.map((prod: any) => ({
+                    productId: prod.product.id,
+                    quantity: prod.quantity,
+                    price: parseFloat(
+                        prod.product.newPrice
+                            .toString()
+                            .replace(/\./g, '')
+                            .replace(',', '.')
+                    ),
+                })),
+            };
+
+            const response = await createOrderApi(orderData);
+            toast.success("Đặt hàng thành công!");
+        }
+        catch (error) {
+            toast.error("Đã có lỗi xảy ra trong quá trình thanh toán. Vui lòng thử lại sau.");
+        }
+        finally {
+            setIsLoading(false);
+        }
+    };
+
 
     if (isLoading) {
         return (
@@ -144,6 +179,8 @@ export default function Payment() {
 
                 <button
                     type="submit"
+                    onClick={handleOrder}
+                    disabled={isLoading}
                     className="w-full bg-blue-600 text-white py-3 rounded-md font-semibold hover:bg-blue-700 transition"
                 >
                     Xác nhận thanh toán
